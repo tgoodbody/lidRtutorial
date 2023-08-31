@@ -31,7 +31,7 @@ libs <- c("geometry","viridis","future","sf","gstat","terra","mapview","mapedit"
 install.packages(libs)
 ```
 
-## Estimated schedule {.smaller}
+## Estimated schedule
 
 -   Introduction and set-up (09:00)
 -   Read LAS and LAZ files (09:15)
