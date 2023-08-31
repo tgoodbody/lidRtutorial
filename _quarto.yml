@@ -1,0 +1,46 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "lidRtutorial"
+  favicon: "images/favicon/apple-touch-icon.png"
+  site-url: https://r-lidar.github.io/lidRbook/
+  navbar:
+    search: true
+    background: light
+    collapse-below: lg
+    type: light
+    logo: "img/logo.png"
+    left:
+      - text: "1-LAS"
+        href: "01_read.qmd"
+      - text: "2-ROI"
+        href: "02_roi.qmd"
+      - text: "3-ABA"
+        href: "03_aba.qmd"
+      - text: "4-CHM"
+        href: "04_chm.qmd"
+      - text: "5-DTM"
+        href: "05_dtm.qmd"
+      - text: "6-ITS"
+        href: "06_its.qmd"
+      - text: "7-LASCATALOG"
+        href: "07_engine.qmd"
+      - text: "8-ENGINE"
+        href: "08_engine2.qmd"
+      - text: "9-SOLUTIONS"
+        href: "09_solutions.qmd"
+  search: 
+    location: navbar
+    type: overlay
+
+format:
+  html:
+    theme: [simple, assets/styles.scss]
+    css: [assets/custom.css]
+    toc: true
+    toc-depth: 4
+    code-overflow: wrap
+
+editor: visual
