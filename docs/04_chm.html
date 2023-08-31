@@ -294,9 +294,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>                               <span class="at">metrics =</span> <span class="fu">pixel_metrics</span>(<span class="at">las =</span> las, <span class="at">func =</span> <span class="sc">~</span><span class="fu">max</span>(Z), <span class="at">res =</span> <span class="dv">1</span>),</span>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>                               <span class="at">times =</span> <span class="dv">10</span>)</span>
 <span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Unit: milliseconds</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     expr      min       lq      mean    median       uq      max neval</span></span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   canopy  43.0130  44.0745  48.65926  44.47475  45.7144  76.9843    10</span></span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  metrics 102.3115 106.6774 126.68707 111.31995 145.0093 176.9655    10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     expr     min       lq     mean   median       uq      max neval</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   canopy 43.6846  44.0657  48.4134  45.2242  51.0504  68.5818    10</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  metrics 98.8050 106.9167 123.8101 115.2184 149.6849 153.4142    10</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>The above code chunk uses <code>microbenchmark::microbenchmark()</code> to compare the performance of the <code>rasterize_canopy()</code> function with <code>p2r()</code> algorithm and <code>pixel_metrics()</code> function with <code>max(Z)</code> for maximum height computation. It demonstrates that the <code>rasterize_canopy()</code> function is optimized for generating CHMs.</p>
 <div class="cell" data-layout-align="center">

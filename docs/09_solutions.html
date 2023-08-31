@@ -257,7 +257,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="resources" class="level2">
 <h2 class="anchored" data-anchor-id="resources">Resources</h2>
 <ul>
-<li><a href="https://github.com/tgoodbody/lidRtutorial/tree/main/R/09_solutions.R">Code</a></li>
+<li><a href="https://github.com/tgoodbody/lidRtutorial/blob/master/R/09_solutions.R">Code</a></li>
 </ul>
 </section>
 <section id="las" class="level2">
@@ -305,7 +305,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="e4." class="level4">
 <h4 class="anchored" data-anchor-id="e4.">E4.</h4>
-<p>Load only the ground points and plot the point-cloud coloured by the returnnumber of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use <code>?lidR::readLAS</code> and see what <code>select</code> options might help.</p>
+<p>Load only the ground points and plot the point-cloud coloured by the return number of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use <code>?lidR::readLAS</code> and see what <code>select</code> options might help.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -352,7 +352,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="e2.-1" class="level4">
 <h4 class="anchored" data-anchor-id="e2.-1">E2.</h4>
-<p>Clip a transect from A c(203850, 7358950) to B c(203950, 7959000).</p>
+<p>Clip a transect from A <code>c(203850, 7358950)</code> to B <code>c(203950, 7959000)</code>.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -363,7 +363,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="e3.-1" class="level4">
 <h4 class="anchored" data-anchor-id="e3.-1">E3.</h4>
-<p>Clip a transect from A c(203850, 7358950) to B c(203950, 7959000) but reorient it so it is no longer on the XY diagonal. Hint = ?clip_transect</p>
+<p>Clip a transect from A <code>c(203850, 7358950)</code> to B <code>c(203950, 7959000)</code> but reorient it so it is no longer on the XY diagonal. Hint = <code>?clip_transect</code></p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -566,7 +566,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="e7." class="level4">
 <h4 class="anchored" data-anchor-id="e7.">E7.</h4>
-<p>Estimate some metrics of interest in this plot with cloud_metric()</p>
+<p>Estimate some metrics of interest in this plot with <code>cloud_metrics()</code>.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -749,7 +749,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="e4.-2" class="level4">
 <h4 class="anchored" data-anchor-id="e4.-2">E4.</h4>
-<p>Assuming that a value of interest of a tree can be estimated using the crown area and the mean Z of the points with the formula <code>2.5 * area + 3 * mean Z</code>. Estimate the value of interest of each tree.</p>
+<p>Assuming that a value of interest of a tree can be estimated using the crown area and the mean <code>Z</code> of the points with the formula <code>2.5 * area + 3 * mean Z</code>. Estimate the value of interest of each tree.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -794,8 +794,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </section>
 <section id="lasctalog" class="level2">
 <h2 class="anchored" data-anchor-id="lasctalog">7-LASCTALOG</h2>
-<p>This exercise is complex because it involves options not yet described. Be sure to use the lidRbook and package documentation.</p>
-<p>https://cran.r-project.org/web/packages/lidR/lidR.pdf https://r-lidar.github.io/lidRbook/index.html</p>
+<p>This exercise is complex because it involves options not yet described. Be sure to use the <a href="https://r-lidar.github.io/lidRbook/index.html">lidRbook</a> and <a href="https://cran.r-project.org/web/packages/lidR/lidR.pdf">package documentation</a>.</p>
 <p>Using:</p>
 <div class="cell" data-layout-align="center">
 <div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>ctg <span class="ot">&lt;-</span> <span class="fu">readLAScatalog</span>(<span class="at">folder =</span> <span class="st">"data/Farm_A/"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -853,8 +852,7 @@ plot(D1, col = heat.colors(50))</code></pre>
 </section>
 <section id="e2.-5" class="level4">
 <h4 class="anchored" data-anchor-id="e2.-5">E2.</h4>
-<p>Modify the catalog to have a point density of 10 pts/m2 using the <code>decimate_points()</code> function. If you get an error make sure to read the documentation for <code>decimate_points()</code> and try: using <code>opt_output_file()</code> to write files to a temporary directory.</p>
-<p>https://r-lidar.github.io/lidRbook/engine.html#engine-dtm-ondisk</p>
+<p>Modify the catalog to have a point density of 10 pts/m2 using the <code>decimate_points()</code> function. If you get an error make sure to read the documentation for <code>decimate_points()</code> and try: using <code>opt_output_file()</code> to <a href="https://r-lidar.github.io/lidRbook/engine.html#engine-dtm-ondisk">write files to a temporary directory</a>.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>
@@ -967,7 +965,7 @@ plot(D2, col = heat.colors(50))</code></pre>
 </section>
 <section id="e5.-2" class="level4">
 <h4 class="anchored" data-anchor-id="e5.-2">E5.</h4>
-<p>Read documentation for the catalog_retile() function and merge the dataset into larger tiles. Use <code>ctg</code> metadata to align new chunks to the lower left corner of the old ones. Hint: Visualize the chunks and use <code>opt_chunk_*</code> options.</p>
+<p>Read documentation for the <code>catalog_retile()</code> function and merge the dataset into larger tiles. Use <code>ctg</code> metadata to align new chunks to the lower left corner of the old ones. Hint: Visualize the chunks and use <code>opt_chunk_*</code> options.</p>
 <div class="cell" data-layout-align="center">
 <details>
 <summary>Code</summary>

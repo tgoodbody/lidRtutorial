@@ -2,6 +2,10 @@
 #' title: "Excercise Solutions"
 #' ---
 #' 
+#' ## Resources
+#' 
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/tree/main/R/09_solutions.R)
+#' 
 #' ## 1-LAS
 #' 
 
@@ -43,7 +47,7 @@ plot(las, color = "Withheld_flag")
 #' 
 #' #### E4.
 #' 
-#' Load only the ground points and plot the point-cloud coloured by the returnnumber of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use `?lidR::readLAS` and see what `select` options might help.
+#' Load only the ground points and plot the point-cloud coloured by the return number of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use `?lidR::readLAS` and see what `select` options might help.
 #' 
 
 las <- readLAS("data/MixedEucaNat_normalized.laz", filter = "-keep_class 2 -set_withheld_flag 0", select = "r")
@@ -63,21 +67,23 @@ plot(plots, add = TRUE)
 #' 
 #' Clip the 5 plots with a radius of 11.3 m,
 #' 
+
 inventory <- clip_roi(las, plots, radius = 11.3)
 plot(inventory[[2]])
 
 #' 
 #' #### E2.
 #' 
-#' Clip a transect from A c(203850, 7358950) to B c(203950, 7959000).
+#' Clip a transect from A `c(203850, 7358950)` to B `c(203950, 7959000)`.
 #' 
+
 tr <- clip_transect(las, c(203850, 7358950), c(203950, 7359000), width = 5)
 plot(tr, axis = T)
 
 #' 
 #' #### E3.
 #' 
-#' Clip a transect from A c(203850, 7358950) to B c(203950, 7959000) but reorient it so it is no longer on the XY diagonal. Hint = ?clip_transect
+#' Clip a transect from A `c(203850, 7358950)` to B `c(203950, 7959000)` but reorient it so it is no longer on the XY diagonal. Hint = `?clip_transect`
 #' 
 
 ## ptr <- clip_transect(las, c(203850, 7358950), c(203950, 7359000), width = 5, xz = TRUE)
@@ -193,7 +199,7 @@ plot(chm, col = height.colors(50))
 #' 
 #' #### E7.
 #' 
-#' Estimate some metrics of interest in this plot with cloud_metric()
+#' Estimate some metrics of interest in this plot with `cloud_metrics()`.
 #' 
 
 metrics <- cloud_metrics(ncirc, .stdmetrics_z)
@@ -245,7 +251,7 @@ plot(las, color = "treeID")
 #' 
 #' #### E4.
 #' 
-#' Assuming that a value of interest of a tree can be estimated using the crown area and the mean Z of the points with the formula `2.5 * area + 3 * mean Z`. Estimate the value of interest of each tree.
+#' Assuming that a value of interest of a tree can be estimated using the crown area and the mean `Z` of the points with the formula `2.5 * area + 3 * mean Z`. Estimate the value of interest of each tree.
 #' 
 
 value_of_interest <- function(x,y,z)
@@ -271,9 +277,7 @@ plot(Vtot, col = viridis::viridis(20))
 #' 
 #' ## 7-LASCTALOG
 #' 
-#' This exercise is complex because it involves options not yet described. Be sure to use the lidRbook and package documentation.
-#' 
-#' https://cran.r-project.org/web/packages/lidR/lidR.pdf https://r-lidar.github.io/lidRbook/index.html
+#' This exercise is complex because it involves options not yet described. Be sure to use the [lidRbook](https://r-lidar.github.io/lidRbook/index.html) and [package documentation](https://cran.r-project.org/web/packages/lidR/lidR.pdf).
 #' 
 #' Using:
 #' 
@@ -293,9 +297,7 @@ plot(D1, col = heat.colors(50))
 #' 
 #' #### E2.
 #' 
-#' Modify the catalog to have a point density of 10 pts/m2 using the `decimate_points()` function. If you get an error make sure to read the documentation for `decimate_points()` and try: using `opt_output_file()` to write files to a temporary directory.
-#' 
-#' https://r-lidar.github.io/lidRbook/engine.html#engine-dtm-ondisk
+#' Modify the catalog to have a point density of 10 pts/m2 using the `decimate_points()` function. If you get an error make sure to read the documentation for `decimate_points()` and try: using `opt_output_file()` to [write files to a temporary directory](https://r-lidar.github.io/lidRbook/engine.html#engine-dtm-ondisk).
 #' 
 
 ## newctg <- decimate_points(las = ctg, algorithm = homogenize(density = 10, res = 5))
@@ -329,7 +331,7 @@ plot(las)
 #' 
 #' #### E5.
 #' 
-#' Read documentation for the catalog_retile() function and merge the dataset into larger tiles. Use `ctg` metadata to align new chunks to the lower left corner of the old ones. Hint: Visualize the chunks and use `opt_chunk_*` options.
+#' Read documentation for the `catalog_retile()` function and merge the dataset into larger tiles. Use `ctg` metadata to align new chunks to the lower left corner of the old ones. Hint: Visualize the chunks and use `opt_chunk_*` options.
 #' 
 
 opt_chunk_size(ctg) <- 280
