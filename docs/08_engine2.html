@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.35">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>lidRtutorial - LAScatalog processing engine</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./images/favicon/apple-touch-icon.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="assets/custom.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <a class="navbar-brand" href="./index.html">
+    <img src="./img/logo.png" alt="">
+    <span class="navbar-title">lidRtutorial</span>
+  </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./01_read.html">1-LAS</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./02_roi.html">2-ROI</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./03_aba.html">3-ABA</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./04_chm.html">4-CHM</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./05_dtm.html">5-DTM</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./06_its.html">6-ITS</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./07_engine.html">7-LASCATALOG</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link active" href="./08_engine2.html" aria-current="page">8-ENGINE</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./09_solutions.html">9-SOLUTIONS</a>
+  </li>  
+</ul>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#relevant-resources" id="toc-relevant-resources" class="nav-link active" data-scroll-target="#relevant-resources">Relevant resources:</a></li>
+  <li><a href="#overview" id="toc-overview" class="nav-link" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#environment" id="toc-environment" class="nav-link" data-scroll-target="#environment">Environment</a></li>
+  <li><a href="#basic-usage" id="toc-basic-usage" class="nav-link" data-scroll-target="#basic-usage">Basic Usage</a>
+  <ul class="collapse">
+  <li><a href="#basic-usage-of-lidr-package" id="toc-basic-usage-of-lidr-package" class="nav-link" data-scroll-target="#basic-usage-of-lidr-package">Basic Usage of <code>lidR</code> Package</a></li>
+  <li><a href="#reading-and-visualizing-lidar-data" id="toc-reading-and-visualizing-lidar-data" class="nav-link" data-scroll-target="#reading-and-visualizing-lidar-data">Reading and Visualizing LiDAR Data</a></li>
+  <li><a href="#visualizing-lidar-data" id="toc-visualizing-lidar-data" class="nav-link" data-scroll-target="#visualizing-lidar-data">Visualizing LiDAR Data</a></li>
+  <li><a href="#catalog_map-function" id="toc-catalog_map-function" class="nav-link" data-scroll-target="#catalog_map-function"><code>catalog_map()</code> Function</a></li>
+  <li><a href="#problem-statement" id="toc-problem-statement" class="nav-link" data-scroll-target="#problem-statement">Problem Statement</a></li>
+  <li><a href="#visualizing-lidar-data-1" id="toc-visualizing-lidar-data-1" class="nav-link" data-scroll-target="#visualizing-lidar-data-1">Visualizing LiDAR Data</a></li>
+  <li><a href="#calculating-rumple-index" id="toc-calculating-rumple-index" class="nav-link" data-scroll-target="#calculating-rumple-index">Calculating Rumple Index</a></li>
+  <li><a href="#solution-lascatalog-processing-engine" id="toc-solution-lascatalog-processing-engine" class="nav-link" data-scroll-target="#solution-lascatalog-processing-engine">Solution: <code>LAScatalog</code> Processing Engine</a></li>
+  <li><a href="#basic-usage-of-the-catalog_map-function" id="toc-basic-usage-of-the-catalog_map-function" class="nav-link" data-scroll-target="#basic-usage-of-the-catalog_map-function">Basic Usage of the <code>catalog_map()</code> Function</a></li>
+  <li><a href="#user-defined-functions-for-processing" id="toc-user-defined-functions-for-processing" class="nav-link" data-scroll-target="#user-defined-functions-for-processing">User-Defined Functions for Processing</a></li>
+  </ul></li>
+  <li><a href="#exercises" id="toc-exercises" class="nav-link" data-scroll-target="#exercises">Exercises</a>
+  <ul class="collapse">
+  <li><a href="#e1." id="toc-e1." class="nav-link" data-scroll-target="#e1.">E1.</a></li>
+  </ul></li>
+  <li><a href="#conclusion" id="toc-conclusion" class="nav-link" data-scroll-target="#conclusion">Conclusion</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">LAScatalog processing engine</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<div class="cell" data-warnings="false">
+
+</div>
+<section id="relevant-resources" class="level2">
+<h2 class="anchored" data-anchor-id="relevant-resources">Relevant resources:</h2>
+<ul>
+<li><a href="https://github.com/tgoodbody/lidRtutorial/blob/main/R/08_engine2.R">Code</a></li>
+<li><a href="https://r-lidar.github.io/lidRbook/engine2.html">lidRbook section: Engine</a></li>
+<li><a href="https://r-lidar.github.io/lidRbook/outbox.html">lidRbook section: Thinking outside the box</a></li>
+</ul>
+</section>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>This code showcases the LASCATALOG PROCESSING ENGINE, which efficiently applies various functions to LiDAR catalogs in parallel. It introduces the <code>catalog_map()</code> function for processing LiDAR data in a catalog. The code includes routines to detect trees and calculate metrics on the LiDAR catalog.</p>
+</section>
+<section id="environment" class="level2">
+<h2 class="anchored" data-anchor-id="environment">Environment</h2>
+<div class="cell" data-layout-align="center" data-warnings="false">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Clear environment</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(<span class="at">list =</span> <span class="fu">ls</span>(<span class="fu">globalenv</span>()))</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Load packages</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lidR)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(terra)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(future)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="basic-usage" class="level2">
+<h2 class="anchored" data-anchor-id="basic-usage">Basic Usage</h2>
+<p>In this section, we will cover the basic usage of the <code>lidR</code> package, including reading LiDAR data, visualization, and inspecting metadata.</p>
+<section id="basic-usage-of-lidr-package" class="level3">
+<h3 class="anchored" data-anchor-id="basic-usage-of-lidr-package">Basic Usage of <code>lidR</code> Package</h3>
+<p>This section introduces the basic usage of the <code>lidR</code> package for reading and visualizing LiDAR data, as well as inspecting metadata.</p>
+</section>
+<section id="reading-and-visualizing-lidar-data" class="level3">
+<h3 class="anchored" data-anchor-id="reading-and-visualizing-lidar-data">Reading and Visualizing LiDAR Data</h3>
+<p>We start by reading a LAS catalog and inspecting one of its LAS files.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read a LAS catalog</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>ctg <span class="ot">&lt;-</span> <span class="fu">readLAScatalog</span>(<span class="at">folder =</span> <span class="st">"data/Farm_A/"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect the first LAS file in the catalog</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>las_file <span class="ot">&lt;-</span> ctg<span class="sc">$</span>filename[<span class="dv">1</span>]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>las <span class="ot">&lt;-</span> <span class="fu">readLAS</span>(las_file)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Warning: There are 167254 points flagged 'withheld'.</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>las</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; class        : LAS (v1.2 format 0)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; memory       : 28.7 Mb </span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; extent       : 207340, 207480, 7357280, 7357420 (xmin, xmax, ymin, ymax)</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; coord. ref.  : SIRGAS 2000 / UTM zone 23S </span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; area         : 19600 m²</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; points       : 578.3 thousand points</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; density      : 29.5 points/m²</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; density      : 22.81 pulses/m²</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualizing-lidar-data" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-lidar-data">Visualizing LiDAR Data</h3>
+<p>We visualize the LiDAR data from the selected LAS file using a 3D plot.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the LiDAR data in 3D</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(las, <span class="at">bg =</span> <span class="st">"white"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="catalog_map-function" class="level3">
+<h3 class="anchored" data-anchor-id="catalog_map-function"><code>catalog_map()</code> Function</h3>
+<p>This section demonstrates the use of the <code>catalog_map()</code> function for efficient processing of LiDAR data within a LAS catalog.</p>
+</section>
+<section id="problem-statement" class="level3">
+<h3 class="anchored" data-anchor-id="problem-statement">Problem Statement</h3>
+<p>We start by addressing a common problem - how can we apply operations to <code>LAS</code> data in a catalog?</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Read a LAS file from the catalog and filter surface points</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>las_file <span class="ot">&lt;-</span> ctg<span class="sc">$</span>filename[<span class="dv">16</span>]</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>las <span class="ot">&lt;-</span> <span class="fu">readLAS</span>(<span class="at">files =</span> las_file, <span class="at">filter =</span> <span class="st">"-drop_withheld -drop_z_below 0 -drop_z_above 40"</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>surflas <span class="ot">&lt;-</span> <span class="fu">filter_surfacepoints</span>(<span class="at">las =</span> las, <span class="at">res =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="visualizing-lidar-data-1" class="level3">
+<h3 class="anchored" data-anchor-id="visualizing-lidar-data-1">Visualizing LiDAR Data</h3>
+<p>We visualize the selected LiDAR data, including both the original data and the surface points.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the LiDAR data with a default color palette</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(las)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-rgl="true">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/visualize_las_ctg2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the surface points using a default color palette</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(surflas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center" data-rgl="true">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/visualize_surflas_ctg2-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="calculating-rumple-index" class="level3">
+<h3 class="anchored" data-anchor-id="calculating-rumple-index">Calculating Rumple Index</h3>
+<p>We calculate the rumple index using the <code>pixel_metrics()</code> function.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate Area-based metrics</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>ri <span class="ot">&lt;-</span> <span class="fu">pixel_metrics</span>(<span class="at">las =</span> las, <span class="sc">~</span><span class="fu">rumple_index</span>(X,Y,Z), <span class="at">res =</span> <span class="dv">10</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(ri)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/calculate_rumple-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="solution-lascatalog-processing-engine" class="level3">
+<h3 class="anchored" data-anchor-id="solution-lascatalog-processing-engine">Solution: <code>LAScatalog</code> Processing Engine</h3>
+<p>This section introduces the <code>LAScatalog</code> processing engine, a powerful tool for efficient processing of LAS data within a catalog.</p>
+</section>
+<section id="basic-usage-of-the-catalog_map-function" class="level3">
+<h3 class="anchored" data-anchor-id="basic-usage-of-the-catalog_map-function">Basic Usage of the <code>catalog_map()</code> Function</h3>
+<p>We demonstrate the basic usage of the <code>catalog_map()</code> function with a simple user-defined function.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># User-defined function for processing chunks</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>routine <span class="ot">&lt;-</span> <span class="cf">function</span>(las){</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Perform computation</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  output <span class="ot">&lt;-</span> <span class="fu">pixel_metrics</span>(<span class="at">las =</span> las, <span class="at">func =</span> <span class="sc">~</span><span class="fu">max</span>(Z), <span class="at">res =</span> <span class="dv">20</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Initialize parallel processing</span></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plan</span>(multisession)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify catalog options</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_filter</span>(ctg) <span class="ot">&lt;-</span> <span class="st">"-drop_withheld"</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply routine to catalog</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">catalog_map</span>(<span class="at">ctg =</span> ctg, <span class="at">FUN =</span> routine)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/basic_usage-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<pre><code>#&gt; Chunk 1 of 25 (4%): state ✓
+#&gt; Chunk 2 of 25 (8%): state ✓
+#&gt; Chunk 3 of 25 (12%): state ✓
+#&gt; Chunk 4 of 25 (16%): state ✓
+#&gt; Chunk 5 of 25 (20%): state ✓
+#&gt; Chunk 6 of 25 (24%): state ✓
+#&gt; Chunk 7 of 25 (28%): state ✓
+#&gt; Chunk 8 of 25 (32%): state ✓
+#&gt; Chunk 9 of 25 (36%): state ✓
+#&gt; Chunk 10 of 25 (40%): state ✓
+#&gt; Chunk 11 of 25 (44%): state ✓
+#&gt; Chunk 12 of 25 (48%): state ✓
+#&gt; Chunk 13 of 25 (52%): state ✓
+#&gt; Chunk 14 of 25 (56%): state ✓
+#&gt; Chunk 15 of 25 (60%): state ✓
+#&gt; Chunk 16 of 25 (64%): state ✓
+#&gt; Chunk 17 of 25 (68%): state ✓
+#&gt; Chunk 18 of 25 (72%): state ✓
+#&gt; Chunk 19 of 25 (76%): state ✓
+#&gt; Chunk 20 of 25 (80%): state ✓
+#&gt; Chunk 21 of 25 (84%): state ✓
+#&gt; Chunk 22 of 25 (88%): state ✓
+#&gt; Chunk 23 of 25 (92%): state ✓
+#&gt; Chunk 24 of 25 (96%): state ✓
+#&gt; Chunk 25 of 25 (100%): state ✓
+
+print(out)
+#&gt; class       : SpatRaster 
+#&gt; dimensions  : 35, 35, 1  (nrow, ncol, nlyr)
+#&gt; resolution  : 20, 20  (x, y)
+#&gt; extent      : 207340, 208040, 7357280, 7357980  (xmin, xmax, ymin, ymax)
+#&gt; coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) 
+#&gt; source(s)   : memory
+#&gt; name        :    V1 
+#&gt; min value   :  0.40 
+#&gt; max value   : 93.35</code></pre>
+</div>
+</section>
+<section id="user-defined-functions-for-processing" class="level3">
+<h3 class="anchored" data-anchor-id="user-defined-functions-for-processing">User-Defined Functions for Processing</h3>
+<p>We demonstrate the use of user-defined functions to process LiDAR data within a catalog.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># User-defined function for rumple index calculation</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>routine_rumple <span class="ot">&lt;-</span> <span class="cf">function</span>(las, <span class="at">res1 =</span> <span class="dv">10</span>, <span class="at">res2 =</span> <span class="dv">1</span>){</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># filter surface points and create rumple index</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  las <span class="ot">&lt;-</span> <span class="fu">filter_surfacepoints</span>(<span class="at">las =</span> las, <span class="at">res =</span> res2)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  output  <span class="ot">&lt;-</span> <span class="fu">pixel_metrics</span>(<span class="at">las =</span> las, <span class="sc">~</span><span class="fu">rumple_index</span>(X,Y,Z), res1)</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(output)</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Set catalog options</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_select</span>(ctg) <span class="ot">&lt;-</span> <span class="st">"xyz"</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_filter</span>(ctg) <span class="ot">&lt;-</span> <span class="st">"-drop_withheld -drop_z_below 0 -drop_z_above 40"</span></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_chunk_buffer</span>(ctg) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">opt_chunk_size</span>(ctg) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Specify options for merging</span></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>options <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">alignment =</span> <span class="dv">10</span>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Apply the user-defined function to the catalog</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>ri <span class="ot">&lt;-</span> <span class="fu">catalog_map</span>(<span class="at">ctg =</span> ctg, <span class="at">FUN =</span> routine_rumple, <span class="at">res1 =</span> <span class="dv">10</span>, <span class="at">res2 =</span> <span class="fl">0.5</span>, <span class="at">.options =</span> options)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/user_defined_functions-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<pre><code>#&gt; Chunk 1 of 25 (4%): state ✓
+#&gt; Chunk 2 of 25 (8%): state ✓
+#&gt; Chunk 3 of 25 (12%): state ✓
+#&gt; Chunk 4 of 25 (16%): state ✓
+#&gt; Chunk 5 of 25 (20%): state ✓
+#&gt; Chunk 6 of 25 (24%): state ✓
+#&gt; Chunk 7 of 25 (28%): state ✓
+#&gt; Chunk 8 of 25 (32%): state ✓
+#&gt; Chunk 9 of 25 (36%): state ✓
+#&gt; Chunk 10 of 25 (40%): state ✓
+#&gt; Chunk 11 of 25 (44%): state ✓
+#&gt; Chunk 12 of 25 (48%): state ✓
+#&gt; Chunk 13 of 25 (52%): state ✓
+#&gt; Chunk 14 of 25 (56%): state ✓
+#&gt; Chunk 15 of 25 (60%): state ✓
+#&gt; Chunk 16 of 25 (64%): state ✓
+#&gt; Chunk 17 of 25 (68%): state ✓
+#&gt; Chunk 18 of 25 (72%): state ✓
+#&gt; Chunk 19 of 25 (76%): state ✓
+#&gt; Chunk 20 of 25 (80%): state ✓
+#&gt; Chunk 21 of 25 (84%): state ✓
+#&gt; Chunk 22 of 25 (88%): state ✓
+#&gt; Chunk 23 of 25 (92%): state ✓
+#&gt; Chunk 24 of 25 (96%): state ✓
+#&gt; Chunk 25 of 25 (100%): state ✓
+
+# Plot the output
+plot(ri, col = height.colors(50))</code></pre>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="08_engine2_files/figure-html/user_defined_functions-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Thinking outside the box
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The LAScatalog engine is versatile! The functions that can be applied to LiDAR data are infinite - leverage the flexibility of <code>lidR</code> and create software that pushes the boundaries of research in forest inventory and management!</p>
+</div>
+</div>
+</section>
+</section>
+<section id="exercises" class="level2">
+<h2 class="anchored" data-anchor-id="exercises">Exercises</h2>
+<section id="e1." class="level4">
+<h4 class="anchored" data-anchor-id="e1.">E1.</h4>
+<p>Implement Noise Filtering</p>
+<ul>
+<li>Explain the purpose of the <code>filter_noise()</code> function.</li>
+<li>Create a user-defined function to apply noise filtering using the <code>catalog_map()</code> function.</li>
+<li>Make sure to consider buffered points when using lidR’s <code>filter_*</code> functions.</li>
+</ul>
+</section>
+</section>
+<section id="conclusion" class="level2">
+<h2 class="anchored" data-anchor-id="conclusion">Conclusion</h2>
+<p>This concludes the tutorial on using the <code>catalog_map()</code> function in the <code>lidR</code> package to efficiently process LAS data within a catalog.</p>
+<div class="cell" data-layout-align="center">
+
+</div>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

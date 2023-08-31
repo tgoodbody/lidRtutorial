@@ -1,0 +1,646 @@
+[
+  {
+    "objectID": "01_read.html#relevant-resources",
+    "href": "01_read.html#relevant-resources",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Relevant Resources",
+    "text": "Relevant Resources\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "01_read.html#overview",
+    "href": "01_read.html#overview",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Overview",
+    "text": "Overview\nWelcome to this LiDAR processing tutorial using R and the lidR package! In this tutorial, you will learn how to read, visualize, query, and validate LiDAR data. We’ll explore basic information about a LiDAR file including the header and tabular data, as well as visualize point clouds using different color schemes based on attributes. We’ll use the select argument in readLAS() to load specific attributes and the filter argument to only load points of interest or apply transformations on-the-fly. We’ll validate the LiDAR data using the las_check function on different data files to ensure data integrity.\nLet’s get started with processing LiDAR data efficiently using lidR and R! Happy learning!"
+  },
+  {
+    "objectID": "01_read.html#environment",
+    "href": "01_read.html#environment",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Environment",
+    "text": "Environment\nWe start by loading the necessary packages, clearing our current environment, and specifying that some warnings be turned off to make our outputs clearer. We will do this for each section in the tutorial.\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)"
+  },
+  {
+    "objectID": "01_read.html#basic-usage",
+    "href": "01_read.html#basic-usage",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Basic Usage",
+    "text": "Basic Usage\n\nLoad and Inspect LiDAR Data\nLoad the LiDAR point cloud data from a LAS file using the readLAS() function. The data is stored in the las object. We can inspect the header information and attributes of the las object.\n\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\")\n#> Warning: There are 127471 points flagged 'withheld'.\n\n# Inspect header information\nlas@header\n#> File signature:           LASF \n#> File source ID:           0 \n#> Global encoding:\n#>  - GPS Time Type: GPS Week Time \n#>  - Synthetic Return Numbers: no \n#>  - Well Know Text: CRS is GeoTIFF \n#>  - Aggregate Model: false \n#> Project ID - GUID:        00000000-0000-0000-0000-000000000000 \n#> Version:                  1.2\n#> System identifier:         \n#> Generating software:      rlas R package \n#> File creation d/y:        0/2013\n#> header size:              227 \n#> Offset to point data:     297 \n#> Num. var. length record:  1 \n#> Point data format:        0 \n#> Point data record length: 20 \n#> Num. of point records:    551117 \n#> Num. of points by return: 402654 125588 21261 1571 43 \n#> Scale factor X Y Z:       0.01 0.01 0.01 \n#> Offset X Y Z:             2e+05 7300000 0 \n#> min X Y Z:                203830 7358900 0 \n#> max X Y Z:                203980 7359050 34.46 \n#> Variable Length Records (VLR):\n#>    Variable Length Record 1 of 1 \n#>        Description: by LAStools of rapidlasso GmbH \n#>        Tags:\n#>           Key 3072 value 31983 \n#> Extended Variable Length Records (EVLR):  void\n\n# Inspect attributes of the point cloud\nlas@data\n#>                X       Y Z Intensity ReturnNumber NumberOfReturns\n#>      1: 203851.6 7359049 0       285            1               1\n#>      2: 203922.2 7359048 0       343            1               1\n#>      3: 203942.9 7359045 0       104            2               2\n#>      4: 203830.0 7359045 0       284            1               1\n#>      5: 203841.2 7359047 0       290            1               1\n#>     ---                                                          \n#> 551113: 203902.5 7359050 0       259            2               2\n#> 551114: 203907.1 7359050 0       206            1               1\n#> 551115: 203956.0 7359050 0       309            1               1\n#> 551116: 203962.5 7359050 0       100            2               2\n#> 551117: 203972.6 7359050 0        46            2               2\n#>         ScanDirectionFlag EdgeOfFlightline Classification Synthetic_flag\n#>      1:                 0                0              2          FALSE\n#>      2:                 0                0              2          FALSE\n#>      3:                 0                0              2          FALSE\n#>      4:                 0                0              2          FALSE\n#>      5:                 0                0              2          FALSE\n#>     ---                                                                 \n#> 551113:                 0                0              2          FALSE\n#> 551114:                 0                0              2          FALSE\n#> 551115:                 0                0              2          FALSE\n#> 551116:                 0                0              2          FALSE\n#> 551117:                 0                0              2          FALSE\n#>         Keypoint_flag Withheld_flag ScanAngleRank UserData PointSourceID\n#>      1:         FALSE          TRUE           -21        0            14\n#>      2:         FALSE          TRUE           -21        0            14\n#>      3:         FALSE          TRUE           -21        0            14\n#>      4:         FALSE          TRUE           -21        0            14\n#>      5:         FALSE          TRUE           -21        0            14\n#>     ---                                                                 \n#> 551113:         FALSE          TRUE            -3        0            15\n#> 551114:         FALSE          TRUE            -3        0            15\n#> 551115:         FALSE          TRUE           -21        0            14\n#> 551116:         FALSE          TRUE           -21        0            14\n#> 551117:         FALSE          TRUE            -1        0            15\n\n# Check the file size of the loaded LiDAR data\nformat(object.size(las), \"Mb\")\n#> [1] \"37.9 Mb\"\n\n\n\nVisualize LiDAR Data\nWe can visualize the LiDAR data using the plot() function. We have several options to control the colors in the plot, such as selecting specific attributes from the data to be used as colors.\n\n\n\n\n\n\nplot() background colour\n\n\n\nSet the background of plots to white using plot(las, bg = \"white\"). To keep the website code clean I’ve omitted this from examples.\n\n\nplot(las)\n\n\n\n\n\n\n\n\n\nplot(las, color = \"Intensity\")\n\n\n\n\n\n\n\n\n\nplot(las, color = \"Classification\")\n\n\n\n\n\n\n\n\n\nplot(las, color = \"ScanAngleRank\", axis = TRUE, legend = TRUE)"
+  },
+  {
+    "objectID": "01_read.html#optimized-usage",
+    "href": "01_read.html#optimized-usage",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Optimized Usage",
+    "text": "Optimized Usage\n\nSelecting Attributes of Interest\nThe readLAS() function allows us to select specific attributes to be loaded into memory. This is useful to reduce memory requirements when working with large LiDAR datasets.\n\n# Load only the xyz coordinates (X, Y, Z) and ignore other attributes\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", select = \"xyz\")\n#> Warning: There are 127471 points flagged 'withheld'.\n\n# Inspect the loaded attributes\nlas@data\n#>                X       Y Z\n#>      1: 203851.6 7359049 0\n#>      2: 203922.2 7359048 0\n#>      3: 203942.9 7359045 0\n#>      4: 203830.0 7359045 0\n#>      5: 203841.2 7359047 0\n#>     ---                   \n#> 551113: 203902.5 7359050 0\n#> 551114: 203907.1 7359050 0\n#> 551115: 203956.0 7359050 0\n#> 551116: 203962.5 7359050 0\n#> 551117: 203972.6 7359050 0\n\n# Check the memory size after loading only the selected attributes\nformat(object.size(las), \"Mb\")\n#> [1] \"12.6 Mb\"\n\n\n\nFiltering Points of Interest\nWe can also load only a subset of the LiDAR points based on certain criteria using the filter argument in readLAS().\n\n# Load only the first return points\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", filter = \"-keep_first\")\n#> Warning: There are 93138 points flagged 'withheld'.\n\n# Inspect the loaded points\nlas\n#> class        : LAS (v1.2 format 0)\n#> memory       : 20 Mb \n#> extent       : 203830, 203980, 7358900, 7359050 (xmin, xmax, ymin, ymax)\n#> coord. ref.  : SIRGAS 2000 / UTM zone 23S \n#> area         : 22500 m²\n#> points       : 402.7 thousand points\n#> density      : 17.9 points/m²\n#> density      : 17.9 pulses/m²\n\n# Check the memory size after loading only the filtered points\nformat(object.size(las), \"Mb\")\n#> [1] \"27.7 Mb\"\n\nplot(las)\n\n\n\n\n\n\n\n\n\n\n\nApplying Transformation on-the-fly\nThe filter argument in readLAS() can be used to apply transformations on-the-fly during loading. This can be useful for tasks such as filtering specific classifications.\n\n# Load and visualize with an applied filter\nlas <- readLAS(files = \"data/MixedEucaNat.laz\", filter = \"-keep_class 2 -keep_class 1\")\n#> Warning: There are 127974 points flagged 'withheld'.\n\nplot(las)\n\n\n\n\n\n\n\n\n\n\n\nFiltering Points using filter_poi()\nAn alternative method for filtering points is using the filter_poi() function, which allows filtering based on attributes of points after the pointcloud is loaded.\n\n# Filter points with Classification == 2\nclass_2 <- filter_poi(las = las, Classification == 2L)\n\n# Combine queries to filter points with Classification == 1 and ReturnNumber == 1\nfirst_returns <- filter_poi(las = las, Classification == 1L & ReturnNumber == 1L)\n\nplot(class_2)\n\n\n\n\n\n\n\n\n\nplot(first_returns)\n\n\n\n\n\n\n\n\n\n\n\nLAS Objects Validation\nThe lidR package provides a function las_check() to validate LAS objects for common issues.\n\n# Load and validate LAS data\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\")\n#> Warning: There are 127471 points flagged 'withheld'.\nlas_check(las)\n#> \n#>  Checking the data\n#>   - Checking coordinates... ✓\n#>   - Checking coordinates type... ✓\n#>   - Checking coordinates range... ✓\n#>   - Checking coordinates quantization... ✓\n#>   - Checking attributes type... ✓\n#>   - Checking ReturnNumber validity... ✓\n#>   - Checking NumberOfReturns validity... ✓\n#>   - Checking ReturnNumber vs. NumberOfReturns... ✓\n#>   - Checking RGB validity... ✓\n#>   - Checking absence of NAs... ✓\n#>   - Checking duplicated points... ✓\n#>   - Checking degenerated ground points...\n#>     ⚠ There were 37 degenerated ground points. Some X Y coordinates were repeated but with different Z coordinates\n#>   - Checking attribute population...\n#>     🛈 'ScanDirectionFlag' attribute is not populated\n#>     🛈 'EdgeOfFlightline' attribute is not populated\n#>   - Checking gpstime incoherances skipped\n#>   - Checking flag attributes...\n#>     🛈 127471 points flagged 'withheld'\n#>   - Checking user data attribute... ✓\n#>  Checking the header\n#>   - Checking header completeness... ✓\n#>   - Checking scale factor validity... ✓\n#>   - Checking point data format ID validity... ✓\n#>   - Checking extra bytes attributes validity... ✓\n#>   - Checking the bounding box validity... ✓\n#>   - Checking coordinate reference system... ✓\n#>  Checking header vs data adequacy\n#>   - Checking attributes vs. point format... ✓\n#>   - Checking header bbox vs. actual content... ✓\n#>   - Checking header number of points vs. actual content... ✓\n#>   - Checking header return number vs. actual content... ✓\n#>  Checking coordinate reference system...\n#>   - Checking if the CRS was understood by R... ✓\n#>  Checking preprocessing already done \n#>   - Checking ground classification... yes\n#>   - Checking normalization... yes\n#>   - Checking negative outliers... ✓\n#>   - Checking flightline classification... yes\n#>  Checking compression\n#>   - Checking attribute compression...\n#>    -  ScanDirectionFlag is compressed\n#>    -  EdgeOfFlightline is compressed\n#>    -  Synthetic_flag is compressed\n#>    -  Keypoint_flag is compressed\n#>    -  UserData is compressed\n\n# Visualize corrupted LAS data\nlas <- readLAS(files = \"data/example_corrupted.laz\")\n#> Warning: Invalid data: 174638 points with a 'return number' greater than the\n#> 'number of returns'.\n\nplot(las)\n\n\n\n\n\n\n\n\n\n\n# Validate corrupted LAS data\nlas_check(las)\n#> \n#>  Checking the data\n#>   - Checking coordinates... ✓\n#>   - Checking coordinates type... ✓\n#>   - Checking coordinates range... ✓\n#>   - Checking coordinates quantization... ✓\n#>   - Checking attributes type... ✓\n#>   - Checking ReturnNumber validity... ✓\n#>   - Checking NumberOfReturns validity... ✓\n#>   - Checking ReturnNumber vs. NumberOfReturns...\n#>     ⚠ Invalid data: 174638 points with a 'return number' greater than the 'number of returns'.\n#>   - Checking RGB validity... ✓\n#>   - Checking absence of NAs... ✓\n#>   - Checking duplicated points...\n#>     ⚠ 202348 points are duplicated and share XYZ coordinates with other points\n#>   - Checking degenerated ground points...\n#>     ⚠ There were 31445 degenerated ground points. Some X Y Z coordinates were repeated\n#>   - Checking attribute population...\n#>     🛈 'PointSourceID' attribute is not populated\n#>     🛈 'ScanDirectionFlag' attribute is not populated\n#>     🛈 'EdgeOfFlightline' attribute is not populated\n#>   - Checking gpstime incoherances skipped\n#>   - Checking flag attributes... ✓\n#>   - Checking user data attribute... ✓\n#>  Checking the header\n#>   - Checking header completeness... ✓\n#>   - Checking scale factor validity... ✓\n#>   - Checking point data format ID validity... ✓\n#>   - Checking extra bytes attributes validity... ✓\n#>   - Checking the bounding box validity... ✓\n#>   - Checking coordinate reference system... ✓\n#>  Checking header vs data adequacy\n#>   - Checking attributes vs. point format... ✓\n#>   - Checking header bbox vs. actual content... ✓\n#>   - Checking header number of points vs. actual content... ✓\n#>   - Checking header return number vs. actual content... ✓\n#>  Checking coordinate reference system...\n#>   - Checking if the CRS was understood by R... ✓\n#>  Checking preprocessing already done \n#>   - Checking ground classification... yes\n#>   - Checking normalization... yes\n#>   - Checking negative outliers...\n#>     ⚠ 77 points below 0\n#>   - Checking flightline classification... no\n#>  Checking compression\n#>   - Checking attribute compression...\n#>    -  ScanDirectionFlag is compressed\n#>    -  EdgeOfFlightline is compressed\n#>    -  Synthetic_flag is compressed\n#>    -  Keypoint_flag is compressed\n#>    -  Withheld_flag is compressed\n#>    -  ScanAngleRank is compressed\n#>    -  UserData is compressed\n#>    -  PointSourceID is compressed"
+  },
+  {
+    "objectID": "01_read.html#exercises-and-questions",
+    "href": "01_read.html#exercises-and-questions",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Exercises and Questions",
+    "text": "Exercises and Questions\nUsing:\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\")\n\nE1.\nWhat are withheld points? Where are they in our point cloud?\n\n\nE2.\nRead the file dropping withheld points.\n\n\nE3.\nThe withheld points seem to be legitimate points that we want to keep. Try to load the file including the withheld points but get rid of the warning (without using suppressWarnings()). Hint: Check available -set_withheld filters using readLAS(filter = \"-h\").\n\n\nE4.\nLoad only the ground points and plot the point cloud colored by the return number of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use ?lidR::readLAS and see what select options might help."
+  },
+  {
+    "objectID": "01_read.html#conclusion",
+    "href": "01_read.html#conclusion",
+    "title": "Read/Plot/Query/Validate",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis concludes our tutorial on the basic usage of the lidR package in R for processing and analyzing LiDAR data. We covered loading LiDAR data, inspecting and visualizing the data, selecting specific attributes, filtering points, and validating LAS objects for issues."
+  },
+  {
+    "objectID": "02_roi.html#relevant-resources",
+    "href": "02_roi.html#relevant-resources",
+    "title": "Regions of Interest",
+    "section": "Relevant Resources",
+    "text": "Relevant Resources\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "02_roi.html#overview",
+    "href": "02_roi.html#overview",
+    "title": "Regions of Interest",
+    "section": "Overview",
+    "text": "Overview\nWe demonstrate the selection of regions of interest (ROIs) from LiDAR data. Geometries like circles and rectangles are selected based on coordinates. Complex geometries are extracted from shapefiles to clip specific areas."
+  },
+  {
+    "objectID": "02_roi.html#environment",
+    "href": "02_roi.html#environment",
+    "title": "Regions of Interest",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)"
+  },
+  {
+    "objectID": "02_roi.html#simple-geometries",
+    "href": "02_roi.html#simple-geometries",
+    "title": "Regions of Interest",
+    "section": "Simple Geometries",
+    "text": "Simple Geometries\n\nLoad LiDAR Data and Inspect\nWe start by loading some LiDAR data and inspecting its header and number of point records.\n\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", filter = \"-set_withheld_flag 0\")\n\n# Inspect the header and the number of point records\nlas@header\n#> File signature:           LASF \n#> File source ID:           0 \n#> Global encoding:\n#>  - GPS Time Type: GPS Week Time \n#>  - Synthetic Return Numbers: no \n#>  - Well Know Text: CRS is GeoTIFF \n#>  - Aggregate Model: false \n#> Project ID - GUID:        00000000-0000-0000-0000-000000000000 \n#> Version:                  1.2\n#> System identifier:         \n#> Generating software:      rlas R package \n#> File creation d/y:        0/2013\n#> header size:              227 \n#> Offset to point data:     297 \n#> Num. var. length record:  1 \n#> Point data format:        0 \n#> Point data record length: 20 \n#> Num. of point records:    551117 \n#> Num. of points by return: 402654 125588 21261 1571 43 \n#> Scale factor X Y Z:       0.01 0.01 0.01 \n#> Offset X Y Z:             2e+05 7300000 0 \n#> min X Y Z:                203830 7358900 0 \n#> max X Y Z:                203980 7359050 34.46 \n#> Variable Length Records (VLR):\n#>    Variable Length Record 1 of 1 \n#>        Description: by LAStools of rapidlasso GmbH \n#>        Tags:\n#>           Key 3072 value 31983 \n#> Extended Variable Length Records (EVLR):  void\nlas@header$`Number of point records`\n#> [1] 551117\n\n\n\nSelect Circular and Rectangular Areas\nWe can select circular and rectangular areas from the LiDAR data based on specified coordinates and radii or dimensions.\n\n# Establish coordinates\nx <- 203890\ny <- 7358935\n\n# Select a circular area\ncircle <- clip_circle(las = las, xcenter = x, ycenter = y, radius = 30)\n\n# Inspect the circular area and the number of point records\ncircle\n#> class        : LAS (v1.2 format 0)\n#> memory       : 3.4 Mb \n#> extent       : 203860, 203920, 7358905, 7358965 (xmin, xmax, ymin, ymax)\n#> coord. ref.  : SIRGAS 2000 / UTM zone 23S \n#> area         : 2909 m²\n#> points       : 74.7 thousand points\n#> density      : 25.69 points/m²\n#> density      : 17.71 pulses/m²\ncircle@header$`Number of point records`\n#> [1] 74737\n\n# Plot the circular area\nplot(circle)\n\n\n\n\n\n\n\n\n\nWe can do the same with a rectangular area by defining corner coordinates.\n\n# Select a rectangular area\nrect <- clip_rectangle(las = las, xleft = x, ybottom = y, xright = x + 40, ytop = y + 30)\n\n# Plot the rectangular area\nplot(rect)\n\n\n\n\n\n\n\n\n\nWe can also supply multiple coordinate pairs to clip multiple ROIs.\n\n# Select multiple random circular areas\nx <- runif(2, x, x)\ny <- runif(2, 7358900, 7359050)\n\nplots <- clip_circle(las = las, xcenter = x, ycenter = y, radius = 10)\n\n# Plot each of the multiple circular areas\nplot(plots[[1]])\n\n\n\n\n\n\n\n\n\n# Plot each of the multiple circular areas\nplot(plots[[2]])"
+  },
+  {
+    "objectID": "02_roi.html#extraction-of-complex-geometries-from-shapefiles",
+    "href": "02_roi.html#extraction-of-complex-geometries-from-shapefiles",
+    "title": "Regions of Interest",
+    "section": "Extraction of Complex Geometries from Shapefiles",
+    "text": "Extraction of Complex Geometries from Shapefiles\nWe demonstrate how to extract complex geometries from shapefiles using the clip_roi() function from the lidR package.\n\n\n\n\n\n\nReminder about legacy packages\n\n\n\nmaptools, rgdal, and rgeos, underpinning the sp package, will retire in October 2023. Please refer to R-spatial evolution reports for details, especially https://r-spatial.org/r/2023/05/15/evolution4.html.\n\n\nWe use the sf package to load an ROI and then clip to its extents.\n\n# Load the shapefile using sf\nplanting <- sf::st_read(dsn = \"data/shapefiles/MixedEucaNat.shp\", quiet = TRUE)\n\n# Plot the LiDAR header information without the map\nplot(las@header, map = FALSE)\n\n# Plot the planting areas on top of the LiDAR header plot\nplot(planting, add = TRUE, col = \"#08B5FF39\")\n\n\n\n\n\n\n\n\n# Extract points within the planting areas using clip_roi()\neucalyptus <- clip_roi(las = las, geometry = planting)\n\n# Plot the extracted points within the planting areas\nplot(eucalyptus)"
+  },
+  {
+    "objectID": "02_roi.html#exercises-and-questions",
+    "href": "02_roi.html#exercises-and-questions",
+    "title": "Regions of Interest",
+    "section": "Exercises and Questions",
+    "text": "Exercises and Questions\nNow, let’s read a shapefile called MixedEucaNatPlot.shp using sf::st_read() and plot it on top of the LiDAR header plot.\n# Read the shapefile \"MixedEucaNatPlot.shp\" using st_read()\nplots <- sf::st_read(dsn = \"data/shapefiles/MixedEucaNatPlot.shp\", quiet = TRUE)\n\n# Plot the LiDAR header information without the map\nplot(las@header, map = FALSE)\n\n# Plot the extracted points within the planting areas\nplot(plots, add = TRUE)\n\nE1.\nClip the 5 plots with a radius of 11.3 m.\n\n\nE2.\nClip a transect from A c(203850, 7358950) to B c(203950, 7959000).\n\n\nE3.\nClip a transect from A c(203850, 7358950) to B c(203950, 7959000) but reorient it so it is no longer on the XY diagonal. Hint = ?clip_transect"
+  },
+  {
+    "objectID": "02_roi.html#conclusion",
+    "href": "02_roi.html#conclusion",
+    "title": "Regions of Interest",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis concludes our tutorial on selecting simple geometries and extracting complex geometries from shapefiles using the lidR package in R."
+  },
+  {
+    "objectID": "03_aba.html#relevant-resources",
+    "href": "03_aba.html#relevant-resources",
+    "title": "Area-based metrics",
+    "section": "Relevant Resources",
+    "text": "Relevant Resources\n\nCode\nlidRbook metrics section\nlidRbook modelling section"
+  },
+  {
+    "objectID": "03_aba.html#overview",
+    "href": "03_aba.html#overview",
+    "title": "Area-based metrics",
+    "section": "Overview",
+    "text": "Overview\nThis code demonstrates an example of the area-based approach for LiDAR data. Basic usage involves computing mean and max height of points within 10x10 m pixels and visualizing the results. The code shows how to compute multiple metrics simultaneously and use predefined metric sets. Advanced usage introduces user-defined metrics for more specialized calculations."
+  },
+  {
+    "objectID": "03_aba.html#environment",
+    "href": "03_aba.html#environment",
+    "title": "Area-based metrics",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)"
+  },
+  {
+    "objectID": "03_aba.html#basic-usage",
+    "href": "03_aba.html#basic-usage",
+    "title": "Area-based metrics",
+    "section": "Basic Usage",
+    "text": "Basic Usage\nWe’ll cover the basic usage of the lidR package to compute metrics from LiDAR data.\n\n# Load LiDAR data, excluding withheld flag points\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", select = \"*\",  filter = \"-set_withheld_flag 0\")\n\nThe pixel_metrics() function calculates structural metrics within a defined spatial resolution (res).\n\n# Compute the mean height of points within 10x10 m pixels\nhmean <- pixel_metrics(las = las, func = ~mean(Z), res = 10)\nhmean\n#> class       : SpatRaster \n#> dimensions  : 15, 15, 1  (nrow, ncol, nlyr)\n#> resolution  : 10, 10  (x, y)\n#> extent      : 203830, 203980, 7358900, 7359050  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> name        :           V1 \n#> min value   :  0.001065319 \n#> max value   : 17.730712824\nplot(hmean, col = height.colors(50))\n\n\n\n\n\n\n\n\n\n# Compute the max height of points within 10x10 m pixels\nhmax <- pixel_metrics(las = las, func = ~max(Z), res = 10)\nhmax\n#> class       : SpatRaster \n#> dimensions  : 15, 15, 1  (nrow, ncol, nlyr)\n#> resolution  : 10, 10  (x, y)\n#> extent      : 203830, 203980, 7358900, 7359050  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> name        :    V1 \n#> min value   :  0.75 \n#> max value   : 34.46\nplot(hmax, col = height.colors(50))\n\n\n\n\n\n\n\n\nYou can specify that multiple metrics should be calculated by housing them in a list().\n\n# Compute several metrics at once using a list\nmetrics <- pixel_metrics(las = las, func = ~list(hmax = max(Z), hmean = mean(Z)), res = 10)\nmetrics\n#> class       : SpatRaster \n#> dimensions  : 15, 15, 2  (nrow, ncol, nlyr)\n#> resolution  : 10, 10  (x, y)\n#> extent      : 203830, 203980, 7358900, 7359050  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> names       :  hmax,        hmean \n#> min values  :  0.75,  0.001065319 \n#> max values  : 34.46, 17.730712824\nplot(metrics, col = height.colors(50))\n\n\n\n\n\n\n\n\nPre-defined metric sets are available, such as .stdmetrics_z. See more here.\n\n# Simplify computing metrics with predefined sets of metrics\nmetrics <- pixel_metrics(las = las, func = .stdmetrics_z, res = 10)\nmetrics\n#> class       : SpatRaster \n#> dimensions  : 15, 15, 36  (nrow, ncol, nlyr)\n#> resolution  : 10, 10  (x, y)\n#> extent      : 203830, 203980, 7358900, 7359050  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> names       :  zmax,        zmean,         zsd,     zskew,       zkurt,    zentropy, ... \n#> min values  :  0.75,  0.001065319,  0.02499118, -1.860858,    1.127885, 0.005277377, ... \n#> max values  : 34.46, 17.730712824, 12.95950270, 41.207184, 1738.774391, 0.955121240, ...\nplot(metrics, col = height.colors(50))\n\n\n\n\n\n\n\n\n# Plot a specific metric from the predefined set\nplot(metrics, \"zsd\", col = height.colors(50))"
+  },
+  {
+    "objectID": "03_aba.html#advanced-usage-with-user-defined-metrics",
+    "href": "03_aba.html#advanced-usage-with-user-defined-metrics",
+    "title": "Area-based metrics",
+    "section": "Advanced Usage with User-Defined Metrics",
+    "text": "Advanced Usage with User-Defined Metrics\n\n\n\n\n\n\n3rd party metric packages\n\n\n\nlidR provides flexibility for users to define custom metrics. Check out 3rd party packages like lidRmetrics for suites of metrics.\n\n\nWe can also create our own user-defined metric functions. This demonstrates the flexibility of the lidR package!\n\n# Generate a user-defined function to compute weighted mean\nf <- function(x, weight) { sum(x*weight)/sum(weight) }\n\n# Compute grid metrics for the user-defined function\nX <- pixel_metrics(las = las, func = ~f(Z, Intensity), res = 10)\n\n# Visualize the output\nplot(X, col = height.colors(50))"
+  },
+  {
+    "objectID": "03_aba.html#exercises-and-questions",
+    "href": "03_aba.html#exercises-and-questions",
+    "title": "Area-based metrics",
+    "section": "Exercises and Questions",
+    "text": "Exercises and Questions\nUsing:\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\", select = \"*\",  filter = \"-set_withheld_flag 0\")\n\nE1.\nAssuming that biomass is estimated using the equation B = 0.5 * mean Z + 0.9 * 90th percentile of Z applied on first returns only, map the biomass.\n\n\nE2.\nMap the density of ground returns at a 5 m resolution with pixel_metrics(filter = ~Classification == LASGROUND).\n\n\nE3.\nMap pixels that are flat (planar) using stdshapemetrics. These could indicate potential roads."
+  },
+  {
+    "objectID": "03_aba.html#conclusion",
+    "href": "03_aba.html#conclusion",
+    "title": "Area-based metrics",
+    "section": "Conclusion",
+    "text": "Conclusion\nIn this tutorial, we covered basic usage of the lidR package for computing mean and max heights within grid cells and using predefined sets of metrics. Additionally, we explored the advanced usage with the ability to define user-specific metrics for grid computation."
+  },
+  {
+    "objectID": "04_chm.html#relevant-resources",
+    "href": "04_chm.html#relevant-resources",
+    "title": "Canopy Height Models",
+    "section": "Relevant Resources",
+    "text": "Relevant Resources\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "04_chm.html#overview",
+    "href": "04_chm.html#overview",
+    "title": "Canopy Height Models",
+    "section": "Overview",
+    "text": "Overview\nThis code demonstrates the creation of a Canopy Height Model (CHM). It shows different algorithms for generating CHMs and provides options for adjusting resolution and filling empty pixels."
+  },
+  {
+    "objectID": "04_chm.html#environment",
+    "href": "04_chm.html#environment",
+    "title": "Canopy Height Models",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(microbenchmark)\nlibrary(terra)"
+  },
+  {
+    "objectID": "04_chm.html#data-preprocessing",
+    "href": "04_chm.html#data-preprocessing",
+    "title": "Canopy Height Models",
+    "section": "Data Preprocessing",
+    "text": "Data Preprocessing\nWe load the LiDAR, keep a random fraction to reduce point density, and visualize the resulting point cloud.\n\n# Load LiDAR data and reduce point density\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", filter = \"-keep_random_fraction 0.4 -set_withheld_flag 0\")\ncol <- height.colors(50)\n\n# Visualize the LiDAR point cloud\nplot(las)"
+  },
+  {
+    "objectID": "04_chm.html#point-to-raster-based-algorithm",
+    "href": "04_chm.html#point-to-raster-based-algorithm",
+    "title": "Canopy Height Models",
+    "section": "Point-to-Raster Based Algorithm",
+    "text": "Point-to-Raster Based Algorithm\nWe demonstrate a simple method for generating Canopy Height Models (CHMs) that assigns the elevation of the highest point to each pixel at a 2 meter spatial resolution.\n\n# Generate the CHM using a simple point-to-raster based algorithm\nchm <- rasterize_canopy(las = las, res = 2, algorithm = p2r())\n\n# Visualize the CHM\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nIn the first code chunk, we generate a CHM using a point-to-raster based algorithm. The rasterize_canopy() function with the p2r() algorithm assigns the elevation of the highest point within each grid cell to the corresponding pixel. The resulting CHM is then visualized using the plot() function.\n\n# Compute max height using pixel_metrics\nchm <- pixel_metrics(las = las, func = ~max(Z), res = 2)\n\n# Visualize the CHM\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe code chunk above shows that the point-to-raster based algorithm is equivalent to using pixel_metrics with a function that computes the maximum height (max(Z)) within each grid cell. The resulting CHM is visualized using the plot() function.\n\n# However, the rasterize_canopy algorithm is optimized\nmicrobenchmark::microbenchmark(canopy = rasterize_canopy(las = las, res = 1, algorithm = p2r()),\n                               metrics = pixel_metrics(las = las, func = ~max(Z), res = 1),\n                               times = 10)\n#> Unit: milliseconds\n#>     expr      min       lq      mean    median       uq      max neval\n#>   canopy  44.6182  45.2379  53.65068  50.36625  55.3493  74.6721    10\n#>  metrics 102.6110 106.3297 124.72135 129.38910 133.0121 147.4105    10\n\nThe above code chunk uses microbenchmark::microbenchmark() to compare the performance of the rasterize_canopy() function with p2r() algorithm and pixel_metrics() function with max(Z) for maximum height computation. It demonstrates that the rasterize_canopy() function is optimized for generating CHMs.\n\n# Make spatial resolution 1 m\nchm <- rasterize_canopy(las = las, res = 1, algorithm = p2r())\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nBy increasing the resolution of the CHM (reducing the grid cell size), we get a more detailed representation of the canopy, but also have more empty pixels.\n\n# Using the 'subcircle' option turns each point into a disc of 8 points with a radius r\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = p2r(subcircle = 0.15))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe rasterize_canopy() function with the p2r() algorithm allows the use of the subcircle option, which turns each LiDAR point into a disc of 8 points with a specified radius. This can help to capture more fine-grained canopy details in the resulting CHM.\n\n# Increasing the subcircle radius, but it may not have meaningful results\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = p2r(subcircle = 0.8))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nIncreasing the subcircle radius may not necessarily result in meaningful CHMs, as it could lead to over-smoothing or loss of important canopy information.\n\n# We can fill empty pixels using TIN interpolation\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = p2r(subcircle = 0.15, na.fill = tin()))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe p2r() algorithm also allows filling empty pixels using TIN (Triangulated Irregular Network) interpolation, which can help in areas with sparse LiDAR points to obtain a smoother CHM."
+  },
+  {
+    "objectID": "04_chm.html#triangulation-based-algorithm",
+    "href": "04_chm.html#triangulation-based-algorithm",
+    "title": "Canopy Height Models",
+    "section": "Triangulation Based Algorithm",
+    "text": "Triangulation Based Algorithm\nWe demonstrate a triangulation-based algorithm for generating CHMs.\n\n# Triangulation of first returns to generate the CHM\nchm <- rasterize_canopy(las = las, res = 1, algorithm = dsmtin())\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe rasterize_canopy() function with the dsmtin() algorithm generates a CHM by performing triangulation on the first returns from the LiDAR data. The resulting CHM represents the surface of the canopy.\n\n# Increasing the resolution results in a more detailed CHM\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = dsmtin())\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nIncreasing the resolution of the CHM using the res argument provides a more detailed representation of the canopy, capturing finer variations in the vegetation.\n\n# Using the Khosravipour et al. 2014 pit-free algorithm with specified thresholds and maximum edge length\nthresholds <- c(0, 5, 10, 20, 25, 30)\nmax_edge <- c(0, 1.35)\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = pitfree(thresholds, max_edge))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe rasterize_canopy function can also use the Khosravipour et al. 2014 pit-free algorithm with specified height thresholds and a maximum edge length to generate a CHM. This algorithm aims to correct depressions in the CHM surface.\n\n\n\n\n\n\nPit-free algorithm\n\n\n\nCheck out Khosravipour et al. 2014 to see the original implementation of the algorithm!\n\n\n\n# Using the 'subcircle' option with the pit-free algorithm\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = pitfree(thresholds, max_edge, 0.1))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nThe subcircle option can be used with the pit-free algorithm to create finer spatial resolution CHMs with subcircles for each LiDAR point, similar to the point-to-raster based algorithm."
+  },
+  {
+    "objectID": "04_chm.html#post-processing",
+    "href": "04_chm.html#post-processing",
+    "title": "Canopy Height Models",
+    "section": "Post-Processing",
+    "text": "Post-Processing\nCHMs can be post-processed by smoothing or other manipulations. Here, we demonstrate post-processing using the terra::focal() function for average smoothing within a 3x3 moving window.\n\n# Post-process the CHM using the 'terra' package and focal() function for smoothing\nker <- matrix(1, 3, 3)\nschm <- terra::focal(chm, w = ker, fun = mean, na.rm = TRUE)\n\n# Visualize the smoothed CHM\nplot(schm, col = col)"
+  },
+  {
+    "objectID": "04_chm.html#conclusion",
+    "href": "04_chm.html#conclusion",
+    "title": "Canopy Height Models",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis tutorial covered different algorithms for generating Canopy Height Models (CHMs) from LiDAR data using the lidR package in R. It includes point-to-raster-based algorithms and triangulation-based algorithms, as well as post-processing using the terra package. The code chunks are well-labeled to help the audience navigate through the tutorial easily."
+  },
+  {
+    "objectID": "05_dtm.html#relevant-resources",
+    "href": "05_dtm.html#relevant-resources",
+    "title": "Digital Terrain Models",
+    "section": "Relevant resources",
+    "text": "Relevant resources\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "05_dtm.html#overview",
+    "href": "05_dtm.html#overview",
+    "title": "Digital Terrain Models",
+    "section": "Overview",
+    "text": "Overview\nThis tutorial explores the creation of a Digital Terrain Model (DTM) from LiDAR data. It demonstrates two algorithms for DTM generation: ground point triangulation, and inverse-distance weighting. Additionally, the tutorial showcases DTM-based normalization and point-based normalization, accompanied by exercises for hands-on practice."
+  },
+  {
+    "objectID": "05_dtm.html#environment",
+    "href": "05_dtm.html#environment",
+    "title": "Digital Terrain Models",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)"
+  },
+  {
+    "objectID": "05_dtm.html#dtm-digital-terrain-model",
+    "href": "05_dtm.html#dtm-digital-terrain-model",
+    "title": "Digital Terrain Models",
+    "section": "DTM (Digital Terrain Model)",
+    "text": "DTM (Digital Terrain Model)\nIn this section, we’ll generate a Digital Terrain Model (DTM) from LiDAR data using two different algorithms: tin() and knnidw().\n\nData Preprocessing\n\n# Load LiDAR data and filter out non-ground points\nlas <- readLAS(files = \"data/MixedEucaNat.laz\", filter = \"-set_withheld_flag 0\")\n\nHere, we load the LiDAR data and exclude points flagged as withheld.\n\n\nVisualizing LiDAR Data\nWe start by visualizing the entire LiDAR point cloud to get an initial overview.\nplot(las)\n\n\n\n\n\n\n\n\n\nVisualizing the LiDAR data again, this time to distinguish ground points (blue) more effectively.\nplot(las, color = \"Classification\")\n\n\n\n\n\n\n\n\n\n\n\nTriangulation Algorithm - tin()\nWe create a DTM using the tin() algorithm with a resolution of 1 meter.\n\n# Generate a DTM using the TIN (Triangulated Irregular Network) algorithm\ndtm_tin <- rasterize_terrain(las = las, res = 1, algorithm = tin())\n\n\n\n\n\n\n\nDegenerated points\n\n\n\nA degenerated point in LiDAR data refers to a point with identical XY(Z) coordinates as another point. This means two or more points occupy exactly the same location in XY/3D space. Degenerated points can cause issues in tasks like creating a digital terrain model, as they don’t add new information and can lead to inconsistencies. Identifying and handling degenerated points appropriately is crucial for accurate and meaningful results.\n\n\n\n\nVisualizing DTM in 3D\nTo better conceptualize the terrain, we visualize the generated DTM in a 3D plot.\n# Visualize the DTM in 3D\nplot_dtm3d(dtm_tin)\n\n\n\n\n\n\n\n\n\n\n\nVisualizing DTM with LiDAR Data\nWe overlay the DTM on the LiDAR data (non-ground points only) for a more comprehensive view of the terrain.\n# Filter for non-ground points to show dtm better\nlas_ng <- filter_poi(las = las, Classification != 2L)\n\n# Visualize the LiDAR data with the overlaid DTM in 3D\nx <- plot(las_ng, bg = \"white\")\nadd_dtm3d(x, dtm_tin, bg = \"white\")\n\n\n\n\n\n\n\n\n\n\n\nInverse-Distance Weighting (IDW) Algorithm - knnidw()\nNext, we generate a DTM using the IDW algorithm to compare results with the TIN-based DTM.\n\n# Generate a DTM using the IDW (Inverse-Distance Weighting) algorithm\ndtm_idw <- rasterize_terrain(las = las, res = 1, algorithm = knnidw())\n\n\n\nVisualizing IDW-based DTM in 3D\nWe visualize the DTM generated using the IDW algorithm in a 3D plot.\n# Visualize the IDW-based DTM in 3D\nplot_dtm3d(dtm_idw)"
+  },
+  {
+    "objectID": "05_dtm.html#normalization",
+    "href": "05_dtm.html#normalization",
+    "title": "Digital Terrain Models",
+    "section": "Normalization",
+    "text": "Normalization\nWe’ll focus on height normalization of LiDAR data using both DTM-based and point-based normalization methods.\n\nDTM-based Normalization\nWe perform DTM-based normalization on the LiDAR data using the previously generated DTM.\n\n# Normalize the LiDAR data using DTM-based normalization\nnlas_dtm <- normalize_height(las = las, algorithm = dtm_tin)\n\n\n\nVisualizing Normalized LiDAR Data\nWe visualize the normalized LiDAR data, illustrating heights relative to the DTM.\n# Visualize the normalized LiDAR data\nplot(nlas_dtm)\n\n\n\n\n\n\n\n\n\n\n\nFiltering Ground Points\nWe filter the normalized data to keep only the ground points.\n\n# Filter the normalized data to retain only ground points\ngnd_dtm <- filter_ground(las = nlas_dtm)\n\n\n\nVisualizing Filtered Ground Points\nWe visualize the filtered ground points, focusing on the terrain after normalization.\n# Visualize the filtered ground points\nplot(gnd_dtm)\n\n\n\n\n\n\n\n\n\n\n\nHistogram of Normalized Ground Points\nA histogram helps us understand the distribution of normalized ground points’ height.\n\n# Plot the histogram of normalized ground points' height\nhist(gnd_dtm$Z, breaks = seq(-1.5, 1.5, 0.05))\n\n\n\n\n\n\n\n\n\n\nDTM-based Normalization with TIN Algorithm\nWe perform DTM-based normalization on the LiDAR data using the TIN algorithm.\n\n# Normalize the LiDAR data using DTM-based normalization with TIN algorithm\nnlas_tin <- normalize_height(las = las, algorithm = tin())\n\n\n\nVisualizing Normalized LiDAR Data with TIN\nWe visualize the normalized LiDAR data using the TIN algorithm, showing heights relative to the DTM.\n\n# Visualize the normalized LiDAR data using the TIN algorithm\nplot(nlas_tin, bg = \"white\")\n\n\n\nFiltering Ground Points (TIN-based)\nWe filter the normalized data (TIN-based) to keep only the ground points.\n\n# Filter the normalized data (TIN-based) to retain only ground points\ngnd_tin <- filter_ground(las = nlas_tin)\n\n\n\nVisualizing Filtered Ground Points (TIN-based)\nWe visualize the filtered ground points after TIN-based normalization, focusing on the terrain.\n# Visualize the filtered ground points after TIN-based normalization\nplot(gnd_tin)\n\n\n\n\n\n\n\n\n\n\n\nHistogram of Normalized Ground Points (TIN-based)\nA histogram illustrates the distribution of normalized ground points’ height after TIN-based normalization.\n\n# Plot the histogram of normalized ground points' height after TIN-based normalization\nhist(gnd_tin$Z, breaks = seq(-1.5, 1.5, 0.05))"
+  },
+  {
+    "objectID": "05_dtm.html#exercises",
+    "href": "05_dtm.html#exercises",
+    "title": "Digital Terrain Models",
+    "section": "Exercises",
+    "text": "Exercises\n\nE1.\nPlot and compare these two normalized point-clouds. Why do they look different? Fix that. Hint: filter.\n# Load and visualize nlas1 and nlas2\nlas1 = readLAS(\"data/MixedEucaNat.laz\", filter = \"-set_withheld_flag 0\")\nnlas1 = normalize_height(las1, tin())\nnlas2 = readLAS(\"data/MixedEucaNat_normalized.laz\", filter = \"-set_withheld_flag 0\")\nplot(nlas1)\nplot(nlas2)\n\n\nE2.\nClip a plot somewhere in MixedEucaNat.laz (the non-normalized file).\n\n\nE3.\nCompute a DTM for this plot. Which method are you choosing and why?\n\n\nE4.\nCompute a DSM (digital surface model). Hint: Look back to how you made a CHM.\n\n\nE5.\nNormalize the plot.\n\n\nE6.\nCompute a CHM.\n\n\nE7.\nCompute some metrics of interest in this plot with cloud_metrics()."
+  },
+  {
+    "objectID": "05_dtm.html#conclusion",
+    "href": "05_dtm.html#conclusion",
+    "title": "Digital Terrain Models",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis tutorial covered the creation of Digital Terrain Models (DTMs) from LiDAR data using different algorithms and explored height normalization techniques. The exercises provided hands-on opportunities to apply these concepts, enhancing understanding and practical skills."
+  },
+  {
+    "objectID": "06_its.html#relevant-resources",
+    "href": "06_its.html#relevant-resources",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Relevant resources",
+    "text": "Relevant resources\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "06_its.html#overview",
+    "href": "06_its.html#overview",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Overview",
+    "text": "Overview\nThis code demonstrates individual tree segmentation (ITS) using LiDAR data. It covers CHM-based and point cloud-based methods for tree detection and segmentation. The code also shows how to extract metrics at the tree level and visualize them."
+  },
+  {
+    "objectID": "06_its.html#environment",
+    "href": "06_its.html#environment",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)\nlibrary(terra)\n\n# Read in LiDAR file and set some color palettes\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\",  filter = \"-set_withheld_flag 0\")\ncol <- height.colors(50)\ncol1 <- pastel.colors(900)"
+  },
+  {
+    "objectID": "06_its.html#chm-based-methods",
+    "href": "06_its.html#chm-based-methods",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "CHM based methods",
+    "text": "CHM based methods\nWe start by creating a Canopy Height Model (CHM) from the LiDAR data. The rasterize_canopy() function generates the CHM using a specified resolution (res) and a chosen algorithm, here p2r(0.15), to compute the percentiles.\n\n# Generate CHM\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = p2r(0.15))\nplot(chm, col = col)\n\n\n\n\n\n\n\n\nAfter building the CHM, we visualize it using a color palette (col)."
+  },
+  {
+    "objectID": "06_its.html#optionally-smooth-the-chm",
+    "href": "06_its.html#optionally-smooth-the-chm",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Optionally smooth the CHM",
+    "text": "Optionally smooth the CHM\nOptionally, we can smooth the CHM using a kernel to remove small-scale variations and enhance larger features like tree canopies.\n\n# Generate kernel and smooth chm\nkernel <- matrix(1, 3, 3)\nschm <- terra::focal(x = chm, w = kernel, fun = median, na.rm = TRUE)\nplot(schm, col = col)\n\n\n\n\n\n\n\n\nHere, we smooth the CHM using a median filter with a 3x3 kernel. The smoothed CHM (schm) is visualized using a color palette to represent height values."
+  },
+  {
+    "objectID": "06_its.html#tree-detection",
+    "href": "06_its.html#tree-detection",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Tree detection",
+    "text": "Tree detection\nNext, we detect tree tops using the smoothed CHM. The locate_trees() function identifies tree tops based on local maxima.\n\n# Detect trees\nttops <- locate_trees(las = schm, algorithm = lmf(ws = 2.5))\nttops\n#> Simple feature collection with 935 features and 2 fields\n#> Attribute-geometry relationships: constant (2)\n#> Geometry type: POINT\n#> Dimension:     XYZ\n#> Bounding box:  xmin: 203830.2 ymin: 7358900 xmax: 203979.8 ymax: 7359050\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\n#> First 10 features:\n#>    treeID      Z                       geometry\n#> 1       1  5.230 POINT Z (203878.8 7359050 5...\n#> 2       2  3.900 POINT Z (203889.8 7359050 3.9)\n#> 3       3  7.360 POINT Z (203898.8 7359050 7...\n#> 4       4 17.790 POINT Z (203905.8 7359050 1...\n#> 5       5 11.940 POINT Z (203935.8 7359050 1...\n#> 6       6  3.275 POINT Z (203939.2 7359050 3...\n#> 7       7 21.550 POINT Z (203951.8 7359050 2...\n#> 8       8 17.290 POINT Z (203963.8 7359050 1...\n#> 9       9 21.085 POINT Z (203977.2 7359050 2...\n#> 10     10 19.220 POINT Z (203914.8 7359049 1...\nplot(chm, col = col)\nplot(ttops, col = \"black\", add = TRUE, cex = 0.5)\n\n\n\n\n\n\n\n\nThe detected tree tops (ttops) are plotted on top of the CHM (chm) to visualize their positions."
+  },
+  {
+    "objectID": "06_its.html#segmentation",
+    "href": "06_its.html#segmentation",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Segmentation",
+    "text": "Segmentation\nNow, we perform tree segmentation using the detected tree tops. The segment_trees() function segments the trees in the LiDAR point cloud based on the previously detected tree tops.\n# Segment trees using dalponte\nlas <- segment_trees(las = las, algorithm = dalponte2016(chm = schm, treetops = ttops))\n\n\n\n\n# Count number of trees detected and segmented\nlength(unique(las$treeID) |> na.omit())\n#> [1] 935\n\n# Visualize all trees\nplot(las, color = \"treeID\")\n\n\n\n\n\n\n\n\n\n\n# Select trees by ID\ntree25 <- filter_poi(las = las, treeID == 25)\ntree125 <- filter_poi(las = las, treeID == 125)\n\nplot(tree25, size = 4)\n\n\n\n\n\n\n\n\n\nplot(tree125, size = 3)\n\n\n\n\n\n\n\n\n\nAfter segmentation, we count the number of trees detected and visualize all the trees in the point cloud. We then select two trees (tree25 and tree125) and visualize them individually.\n\n\n\n\n\n\nVariability and testing\n\n\n\nForests are highly variable! This means that some algorithms and parameters will work better than others depending on the data you have. Play around with algorithms and see which works best for your data."
+  },
+  {
+    "objectID": "06_its.html#working-with-rasters",
+    "href": "06_its.html#working-with-rasters",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Working with rasters",
+    "text": "Working with rasters\nThe lidR package is designed for point clouds, but some functions can be applied to raster data as well. Here, we show how to extract trees from the CHM without using the point cloud directly.\n\n# Generate rasterized delineation\ntrees <- dalponte2016(chm = chm, treetops = ttops)() # Notice the parenthesis at the end\ntrees\n#> class       : SpatRaster \n#> dimensions  : 300, 300, 1  (nrow, ncol, nlyr)\n#> resolution  : 0.5, 0.5  (x, y)\n#> extent      : 203830, 203980, 7358900, 7359050  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> name        :   Z \n#> min value   :   1 \n#> max value   : 935\n\nplot(trees, col = col1)\nplot(ttops, add = TRUE, cex = 0.5)\n#> Warning in plot.sf(ttops, add = TRUE, cex = 0.5): ignoring all but the first\n#> attribute\n\n\n\n\n\n\n\n\nWe create tree objects (trees) using the dalponte2016 algorithm with the CHM and tree tops. The resulting objects are visualized alongside the detected tree tops."
+  },
+  {
+    "objectID": "06_its.html#tree-detection-1",
+    "href": "06_its.html#tree-detection-1",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Tree detection",
+    "text": "Tree detection\nWe begin with tree detection using the local maxima filtering (lmf) algorithm. This approach directly works with the LiDAR point cloud to detect tree tops.\n\n# Detect trees\nttops <- locate_trees(las = las, algorithm = lmf(ws = 3, hmin = 5))\n\n# Visualize\nx <- plot(las)\nadd_treetops3d(x = x, ttops = ttops, radius = 0.5)\n\n\n\n\n\n\n\n\n\nWe detect tree tops using the lmf algorithm and visualize them in 3D by adding the tree tops to the LiDAR plot."
+  },
+  {
+    "objectID": "06_its.html#tree-segmentation",
+    "href": "06_its.html#tree-segmentation",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Tree segmentation",
+    "text": "Tree segmentation\nNext, we perform tree segmentation using the li2012 algorithm, which directly processes the LiDAR point cloud.\n# Segment using li\nlas <- segment_trees(las = las, algorithm = li2012())\n\n\n\nplot(las, color = \"treeID\")\n# This algorithm does not seem pertinent for this dataset.\n\n\n\n\n\n\n\n\n\nThe li2012 algorithm segments the trees in the LiDAR point cloud based on local neighborhood information. However, it may not be optimal for this specific dataset."
+  },
+  {
+    "objectID": "06_its.html#using-crown_metrics",
+    "href": "06_its.html#using-crown_metrics",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Using crown_metrics()",
+    "text": "Using crown_metrics()\nThe crown_metrics() function extracts metrics from the segmented trees using a user-defined function. We use the length of the Z coordinate to obtain the tree height as an example.\n\n# Generate metrics for each delineated crown\nmetrics <- crown_metrics(las = las, func = ~list(n = length(Z)))\nmetrics\n#> Simple feature collection with 752 features and 2 fields\n#> Geometry type: POINT\n#> Dimension:     XYZ\n#> Bounding box:  xmin: 203830 ymin: 7358900 xmax: 203980 ymax: 7359050\n#> z_range:       zmin: 2.02 zmax: 34.46\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\n#> First 10 features:\n#>    treeID    n                       geometry\n#> 1       1 2774 POINT Z (203969.4 7359045 3...\n#> 2       2 1918 POINT Z (203969.5 7358922 3...\n#> 3       3  859 POINT Z (203967.8 7358926 3...\n#> 4       4 1605 POINT Z (203943.1 7358936 3...\n#> 5       5  454 POINT Z (203954.5 7358949 3...\n#> 6       6  417 POINT Z (203957.8 7358949 3...\n#> 7       7  946 POINT Z (203949.7 7358943 3...\n#> 8       8 1671 POINT Z (203970 7358900 32.09)\n#> 9       9 1106 POINT Z (203975.2 7358915 3...\n#> 10     10  411 POINT Z (203947.7 7358949 3...\nplot(metrics[\"n\"], cex = 0.8)\n\n\n\n\n\n\n\n\nWe calculate the number of points (n) in each tree crown using a user-defined function, and then visualize the results."
+  },
+  {
+    "objectID": "06_its.html#applying-user-defined-functions",
+    "href": "06_its.html#applying-user-defined-functions",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Applying user-defined functions",
+    "text": "Applying user-defined functions\nWe can map any user-defined function at the tree level using the crown_metrics() function, just like pixel_metrics(). Here, we calculate the convex hull area of each tree using a custom function f() and then visualize the results.\n\n# User defined function for area calculation\nf <- function(x, y) {\n  # Get xy for tree\n  coords <- cbind(x, y)\n  \n  # Convex hull\n  ch <- chull(coords)\n  \n  # Close coordinates\n  ch <- c(ch, ch[1])\n  ch_coords <- coords[ch, ]\n  \n  # Generate polygon\n  p <- sf::st_polygon(list(ch_coords))\n  \n  #calculate area\n  area <- sf::st_area(p)\n\n  return(list(A = area))\n}\n\n# Apply user-defined function\nmetrics <- crown_metrics(las = las, func = ~f(X, Y))\nmetrics\n#> Simple feature collection with 752 features and 2 fields\n#> Geometry type: POINT\n#> Dimension:     XYZ\n#> Bounding box:  xmin: 203830 ymin: 7358900 xmax: 203980 ymax: 7359050\n#> z_range:       zmin: 2.02 zmax: 34.46\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\n#> First 10 features:\n#>    treeID         A                       geometry\n#> 1       1 172.51720 POINT Z (203969.4 7359045 3...\n#> 2       2 103.84100 POINT Z (203969.5 7358922 3...\n#> 3       3  72.18270 POINT Z (203967.8 7358926 3...\n#> 4       4  79.85055 POINT Z (203943.1 7358936 3...\n#> 5       5  17.34630 POINT Z (203954.5 7358949 3...\n#> 6       6  17.45860 POINT Z (203957.8 7358949 3...\n#> 7       7  41.13120 POINT Z (203949.7 7358943 3...\n#> 8       8  71.97225 POINT Z (203970 7358900 32.09)\n#> 9       9  50.51530 POINT Z (203975.2 7358915 3...\n#> 10     10  24.61015 POINT Z (203947.7 7358949 3...\nplot(metrics[\"A\"], cex = 0.8)\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n3rd party metric packages\n\n\n\nRemember that you can use 3rd party packages like lidRmetrics for crown metrics too!"
+  },
+  {
+    "objectID": "06_its.html#using-pre-defined-metrics",
+    "href": "06_its.html#using-pre-defined-metrics",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Using pre-defined metrics",
+    "text": "Using pre-defined metrics\nSome metrics are already recorded, and we can directly calculate them at the tree level using crown_metrics().\n\nmetrics <- crown_metrics(las = las, func = .stdtreemetrics)\nmetrics\n#> Simple feature collection with 752 features and 4 fields\n#> Geometry type: POINT\n#> Dimension:     XYZ\n#> Bounding box:  xmin: 203830 ymin: 7358900 xmax: 203980 ymax: 7359050\n#> z_range:       zmin: 2.02 zmax: 34.46\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\n#> First 10 features:\n#>    treeID     Z npoints convhull_area                       geometry\n#> 1       1 34.46    2774       172.517 POINT Z (203969.4 7359045 3...\n#> 2       2 32.52    1918       103.841 POINT Z (203969.5 7358922 3...\n#> 3       3 32.46     859        72.183 POINT Z (203967.8 7358926 3...\n#> 4       4 32.35    1605        79.851 POINT Z (203943.1 7358936 3...\n#> 5       5 32.33     454        17.346 POINT Z (203954.5 7358949 3...\n#> 6       6 32.22     417        17.459 POINT Z (203957.8 7358949 3...\n#> 7       7 32.14     946        41.131 POINT Z (203949.7 7358943 3...\n#> 8       8 32.09    1671        71.972 POINT Z (203970 7358900 32.09)\n#> 9       9 32.08    1106        50.515 POINT Z (203975.2 7358915 3...\n#> 10     10 32.01     411        24.610 POINT Z (203947.7 7358949 3...\n\n# Visualize individual metrics\nplot(x = metrics[\"convhull_area\"], cex = 0.8)\n\n\n\n\n\n\n\nplot(x = metrics[\"Z\"], cex = 0.8)\n\n\n\n\n\n\n\n\nWe calculate tree-level metrics using .stdtreemetrics and visualize individual metrics like convex hull area and height."
+  },
+  {
+    "objectID": "06_its.html#delineating-crowns",
+    "href": "06_its.html#delineating-crowns",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Delineating crowns",
+    "text": "Delineating crowns\nThe crown_metrics() function segments trees and extracts metrics at the crown level.\n\ncvx_hulls <- crown_metrics(las = las, func = .stdtreemetrics, geom = 'convex')\ncvx_hulls\n#> Simple feature collection with 752 features and 4 fields\n#> Geometry type: POLYGON\n#> Dimension:     XY\n#> Bounding box:  xmin: 203830 ymin: 7358900 xmax: 203980 ymax: 7359050\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\n#> First 10 features:\n#>    treeID     Z npoints convhull_area                       geometry\n#> 1       1 34.46    2774       172.517 POLYGON ((203977.3 7359044,...\n#> 2       2 32.52    1918       103.841 POLYGON ((203963.7 7358914,...\n#> 3       3 32.46     859        72.183 POLYGON ((203969.1 7358926,...\n#> 4       4 32.35    1605        79.851 POLYGON ((203948 7358933, 2...\n#> 5       5 32.33     454        17.346 POLYGON ((203955.8 7358949,...\n#> 6       6 32.22     417        17.459 POLYGON ((203959.3 7358948,...\n#> 7       7 32.14     946        41.131 POLYGON ((203950.8 7358941,...\n#> 8       8 32.09    1671        71.972 POLYGON ((203975.7 7358902,...\n#> 9       9 32.08    1106        50.515 POLYGON ((203977 7358915, 2...\n#> 10     10 32.01     411        24.610 POLYGON ((203950.3 7358949,...\n\nplot(cvx_hulls)\nplot(ttops, add = TRUE, cex = 0.5)\n#> Warning in plot.sf(ttops, add = TRUE, cex = 0.5): ignoring all but the first\n#> attribute\n\n\n\n\n\n\n\n\n# Visualize individual metrics based on values\nplot(x = cvx_hulls[\"convhull_area\"])\n\n\n\n\n\n\n\nplot(x = cvx_hulls[\"Z\"])\n\n\n\n\n\n\n\n\nWe use crown_metrics() with .stdtreemetrics to segment trees and extract metrics based on crown delineation."
+  },
+  {
+    "objectID": "06_its.html#exercises",
+    "href": "06_its.html#exercises",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Exercises",
+    "text": "Exercises"
+  },
+  {
+    "objectID": "06_its.html#conclusion",
+    "href": "06_its.html#conclusion",
+    "title": "Individual Tree Detection & Segmentation",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis concludes the tutorial on various methods for tree detection, segmentation, and extraction of metrics using the lidR package in R."
+  },
+  {
+    "objectID": "07_engine.html#relevant-resources",
+    "href": "07_engine.html#relevant-resources",
+    "title": "LAScatalog",
+    "section": "Relevant resources:",
+    "text": "Relevant resources:\n\nCode\nlidRbook section"
+  },
+  {
+    "objectID": "07_engine.html#overview",
+    "href": "07_engine.html#overview",
+    "title": "LAScatalog",
+    "section": "Overview",
+    "text": "Overview\nThis code performs various operations on LiDAR data using LAScatalog functionality. We visualize and inspect the data, validate the files, clip the data based on specific coordinates, generate a Canopy Height Model (CHM), compute above ground biomass, detect treetops, specify processing options, and use parallel computing."
+  },
+  {
+    "objectID": "07_engine.html#environment",
+    "href": "07_engine.html#environment",
+    "title": "LAScatalog",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)"
+  },
+  {
+    "objectID": "07_engine.html#basic-usage",
+    "href": "07_engine.html#basic-usage",
+    "title": "LAScatalog",
+    "section": "Basic Usage",
+    "text": "Basic Usage\nIn this section, we will cover the basic usage of the lidR package, including reading LiDAR data, visualization, and inspecting metadata.\n\nRead catalog from directory of files\nWe begin by creating a LAS catalog (ctg) from a folder containing multiple LAS files using the readLAScatalog() function.\n\n# Read catalog and drop withheld\nctg <- readLAScatalog(folder = \"data/Farm_A/\",filter = \"-drop_withheld\")\n\n\n\nInspect catalog\nWe can inspect the contents of the catalog using standard R functions.\n\nctg\n#> class       : LAScatalog (v1.2 format 0)\n#> extent      : 207340, 208040, 7357280, 7357980 (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S \n#> area        : 489930 m²\n#> points      : 14.49 million points\n#> density     : 29.6 points/m²\n#> density     : 23.2 pulses/m²\n#> num. files  : 25\n\n\n\nVisualize catalog\nWe visualize the catalog, showing the spatial coverage of the LiDAR data header extents. The map can be interactive if we use map = TRUE. Try clicking on a tile to see its header information.\n\nplot(ctg)\n\n\n\n\n\n\n\n\n# Interactive\nplot(ctg, map = TRUE)\n\n\n\n\n\n\n\n\nCheck coordinate system and extent info\nWe examine the coordinate system and extent information of the catalog.\n\n# coordinate system\ncrs(ctg)\n#> Coordinate Reference System:\n#> Deprecated Proj.4 representation:\n#>  +proj=utm +zone=23 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m\n#> +no_defs \n#> WKT2 2019 representation:\n#> PROJCRS[\"SIRGAS 2000 / UTM zone 23S\",\n#>     BASEGEOGCRS[\"SIRGAS 2000\",\n#>         DATUM[\"Sistema de Referencia Geocentrico para las AmericaS 2000\",\n#>             ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n#>                 LENGTHUNIT[\"metre\",1]]],\n#>         PRIMEM[\"Greenwich\",0,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433]],\n#>         ID[\"EPSG\",4674]],\n#>     CONVERSION[\"UTM zone 23S\",\n#>         METHOD[\"Transverse Mercator\",\n#>             ID[\"EPSG\",9807]],\n#>         PARAMETER[\"Latitude of natural origin\",0,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433],\n#>             ID[\"EPSG\",8801]],\n#>         PARAMETER[\"Longitude of natural origin\",-45,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433],\n#>             ID[\"EPSG\",8802]],\n#>         PARAMETER[\"Scale factor at natural origin\",0.9996,\n#>             SCALEUNIT[\"unity\",1],\n#>             ID[\"EPSG\",8805]],\n#>         PARAMETER[\"False easting\",500000,\n#>             LENGTHUNIT[\"metre\",1],\n#>             ID[\"EPSG\",8806]],\n#>         PARAMETER[\"False northing\",10000000,\n#>             LENGTHUNIT[\"metre\",1],\n#>             ID[\"EPSG\",8807]]],\n#>     CS[Cartesian,2],\n#>         AXIS[\"(E)\",east,\n#>             ORDER[1],\n#>             LENGTHUNIT[\"metre\",1]],\n#>         AXIS[\"(N)\",north,\n#>             ORDER[2],\n#>             LENGTHUNIT[\"metre\",1]],\n#>     USAGE[\n#>         SCOPE[\"Engineering survey, topographic mapping.\"],\n#>         AREA[\"Brazil - between 48°W and 42°W, northern and southern hemispheres, onshore and offshore.\"],\n#>         BBOX[-33.5,-48,5.13,-42]],\n#>     ID[\"EPSG\",31983]]\nprojection(ctg)\n#> [1] \"+proj=utm +zone=23 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs\"\nst_crs(ctg)\n#> Coordinate Reference System:\n#>   User input: EPSG:31983 \n#>   wkt:\n#> PROJCRS[\"SIRGAS 2000 / UTM zone 23S\",\n#>     BASEGEOGCRS[\"SIRGAS 2000\",\n#>         DATUM[\"Sistema de Referencia Geocentrico para las AmericaS 2000\",\n#>             ELLIPSOID[\"GRS 1980\",6378137,298.257222101,\n#>                 LENGTHUNIT[\"metre\",1]]],\n#>         PRIMEM[\"Greenwich\",0,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433]],\n#>         ID[\"EPSG\",4674]],\n#>     CONVERSION[\"UTM zone 23S\",\n#>         METHOD[\"Transverse Mercator\",\n#>             ID[\"EPSG\",9807]],\n#>         PARAMETER[\"Latitude of natural origin\",0,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433],\n#>             ID[\"EPSG\",8801]],\n#>         PARAMETER[\"Longitude of natural origin\",-45,\n#>             ANGLEUNIT[\"degree\",0.0174532925199433],\n#>             ID[\"EPSG\",8802]],\n#>         PARAMETER[\"Scale factor at natural origin\",0.9996,\n#>             SCALEUNIT[\"unity\",1],\n#>             ID[\"EPSG\",8805]],\n#>         PARAMETER[\"False easting\",500000,\n#>             LENGTHUNIT[\"metre\",1],\n#>             ID[\"EPSG\",8806]],\n#>         PARAMETER[\"False northing\",10000000,\n#>             LENGTHUNIT[\"metre\",1],\n#>             ID[\"EPSG\",8807]]],\n#>     CS[Cartesian,2],\n#>         AXIS[\"(E)\",east,\n#>             ORDER[1],\n#>             LENGTHUNIT[\"metre\",1]],\n#>         AXIS[\"(N)\",north,\n#>             ORDER[2],\n#>             LENGTHUNIT[\"metre\",1]],\n#>     USAGE[\n#>         SCOPE[\"Engineering survey, topographic mapping.\"],\n#>         AREA[\"Brazil - between 48°W and 42°W, northern and southern hemispheres, onshore and offshore.\"],\n#>         BBOX[-33.5,-48,5.13,-42]],\n#>     ID[\"EPSG\",31983]]\n\n# spatial extents\nextent(ctg)\n#> class      : Extent \n#> xmin       : 207340 \n#> xmax       : 208040 \n#> ymin       : 7357280 \n#> ymax       : 7357980\nbbox(ctg)\n#>         [,1]    [,2]\n#> [1,]  207340  208040\n#> [2,] 7357280 7357980\nst_bbox(ctg)\n#>    xmin    ymin    xmax    ymax \n#>  207340 7357280  208040 7357980"
+  },
+  {
+    "objectID": "07_engine.html#validate-files-in-catalog",
+    "href": "07_engine.html#validate-files-in-catalog",
+    "title": "LAScatalog",
+    "section": "Validate files in catalog",
+    "text": "Validate files in catalog\nWe validate the LAS files within the catalog using the las_check function. It works the same way as it would on a regular LAS file.\n\n# Perform a check on the catalog\nlas_check(las = ctg)\n#> \n#>  Checking headers consistency\n#>   - Checking file version consistency... ✓\n#>   - Checking scale consistency... ✓\n#>   - Checking offset consistency... ✓\n#>   - Checking point type consistency... ✓\n#>   - Checking VLR consistency... ✓\n#>   - Checking CRS consistency... ✓\n#>  Checking the headers\n#>   - Checking scale factor validity... ✓\n#>   - Checking Point Data Format ID validity... ✓\n#>  Checking preprocessing already done \n#>   - Checking negative outliers...\n#>     ⚠ 25 file(s) with points below 0\n#>   - Checking normalization... no\n#>  Checking the geometry\n#>   - Checking overlapping tiles... ✓\n#>   - Checking point indexation... no"
+  },
+  {
+    "objectID": "07_engine.html#file-indexing",
+    "href": "07_engine.html#file-indexing",
+    "title": "LAScatalog",
+    "section": "File indexing",
+    "text": "File indexing\nWe explore indexing of LAScatalog objects for efficient processing.\n\n\n\n\n\n\nIndexing\n\n\n\nThe lidR policy has always been: use LAStools and lasindex for spatial indexing. If you really don’t want, or can’t use LAStools, then there is a hidden function in lidR that users can use (lidR:::catalog_laxindex()).\n\n\n\n\n\n\n# check if files have .lax\nis.indexed(ctg)\n#> [1] FALSE\n\n# generate index files\nlidR:::catalog_laxindex(ctg)\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\n\n# check if files have .lax\nis.indexed(ctg)\n#> [1] TRUE"
+  },
+  {
+    "objectID": "07_engine.html#generate-chm",
+    "href": "07_engine.html#generate-chm",
+    "title": "LAScatalog",
+    "section": "Generate CHM",
+    "text": "Generate CHM\nWe create a CHM by rasterizing the point cloud data from the catalog.\n\n# Generate CHM\nchm <- rasterize_canopy(las = ctg, res = 0.5, algorithm = p2r(subcircle = 0.15))\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\nplot(chm, col = height.colors(50))\n\n\n\n\n\n\n\n\nWe encounter issues and warnings while generating the CHM. Let’s figure out how to fix the warnings and get decent outputs.\n\n# Check for warnings\nwarnings()"
+  },
+  {
+    "objectID": "07_engine.html#catalog-processing-options",
+    "href": "07_engine.html#catalog-processing-options",
+    "title": "LAScatalog",
+    "section": "Catalog processing options",
+    "text": "Catalog processing options\nWe explore and manipulate catalog options.\n\n# Setting options and re-rasterizing the CHM\nopt_filter(ctg) <- \"-drop_z_below 0 -drop_z_above 40\"\nopt_select(ctg) <- \"xyz\"\nchm <- rasterize_canopy(las = ctg, res = 0.5, algorithm = p2r(subcircle = 0.15))\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ⚠\n#> Chunk 2 of 25 (8%): state ⚠\n#> Chunk 3 of 25 (12%): state ⚠\n#> Chunk 4 of 25 (16%): state ⚠\n#> Chunk 5 of 25 (20%): state ⚠\n#> Chunk 6 of 25 (24%): state ⚠\n#> Chunk 7 of 25 (28%): state ⚠\n#> Chunk 8 of 25 (32%): state ⚠\n#> Chunk 9 of 25 (36%): state ⚠\n#> Chunk 10 of 25 (40%): state ⚠\n#> Chunk 11 of 25 (44%): state ⚠\n#> Chunk 12 of 25 (48%): state ⚠\n#> Chunk 13 of 25 (52%): state ⚠\n#> Chunk 14 of 25 (56%): state ⚠\n#> Chunk 15 of 25 (60%): state ⚠\n#> Chunk 16 of 25 (64%): state ⚠\n#> Chunk 17 of 25 (68%): state ⚠\n#> Chunk 18 of 25 (72%): state ⚠\n#> Chunk 19 of 25 (76%): state ⚠\n#> Chunk 20 of 25 (80%): state ⚠\n#> Chunk 21 of 25 (84%): state ⚠\n#> Chunk 22 of 25 (88%): state ⚠\n#> Chunk 23 of 25 (92%): state ⚠\n#> Chunk 24 of 25 (96%): state ⚠\n#> Chunk 25 of 25 (100%): state ⚠\nplot(chm, col = height.colors(50))"
+  },
+  {
+    "objectID": "07_engine.html#area-based-approach-on-catalog",
+    "href": "07_engine.html#area-based-approach-on-catalog",
+    "title": "LAScatalog",
+    "section": "Area-based approach on catalog",
+    "text": "Area-based approach on catalog\nIn this section, we generate Above Ground Biomass (ABA) estimates using the LAScatalog.\n\nGenerate ABA output and visualize\nWe calculate ABA using the pixel_metrics function and visualize the results.\n\n# Generate area-based metrics\nmodel <- pixel_metrics(las = ctg, func = ~max(Z), res = 20)\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ⚠\n#> Chunk 2 of 25 (8%): state ⚠\n#> Chunk 3 of 25 (12%): state ⚠\n#> Chunk 4 of 25 (16%): state ⚠\n#> Chunk 5 of 25 (20%): state ⚠\n#> Chunk 6 of 25 (24%): state ⚠\n#> Chunk 7 of 25 (28%): state ⚠\n#> Chunk 8 of 25 (32%): state ⚠\n#> Chunk 9 of 25 (36%): state ⚠\n#> Chunk 10 of 25 (40%): state ⚠\n#> Chunk 11 of 25 (44%): state ⚠\n#> Chunk 12 of 25 (48%): state ⚠\n#> Chunk 13 of 25 (52%): state ⚠\n#> Chunk 14 of 25 (56%): state ⚠\n#> Chunk 15 of 25 (60%): state ⚠\n#> Chunk 16 of 25 (64%): state ⚠\n#> Chunk 17 of 25 (68%): state ⚠\n#> Chunk 18 of 25 (72%): state ⚠\n#> Chunk 19 of 25 (76%): state ⚠\n#> Chunk 20 of 25 (80%): state ⚠\n#> Chunk 21 of 25 (84%): state ⚠\n#> Chunk 22 of 25 (88%): state ⚠\n#> Chunk 23 of 25 (92%): state ⚠\n#> Chunk 24 of 25 (96%): state ⚠\n#> Chunk 25 of 25 (100%): state ⚠\nplot(model, col = height.colors(50))"
+  },
+  {
+    "objectID": "07_engine.html#first-returns-only",
+    "href": "07_engine.html#first-returns-only",
+    "title": "LAScatalog",
+    "section": "First returns only",
+    "text": "First returns only\nWe adjust the catalog options to calculate ABA based on first returns only.\n\nopt_filter(ctg) <- \"-drop_z_below 0 -drop_z_above 40 -keep_first\"\nmodel <- pixel_metrics(las = ctg, func = ~max(Z), res = 20)\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ⚠\n#> Chunk 2 of 25 (8%): state ⚠\n#> Chunk 3 of 25 (12%): state ⚠\n#> Chunk 4 of 25 (16%): state ⚠\n#> Chunk 5 of 25 (20%): state ⚠\n#> Chunk 6 of 25 (24%): state ⚠\n#> Chunk 7 of 25 (28%): state ⚠\n#> Chunk 8 of 25 (32%): state ⚠\n#> Chunk 9 of 25 (36%): state ⚠\n#> Chunk 10 of 25 (40%): state ⚠\n#> Chunk 11 of 25 (44%): state ⚠\n#> Chunk 12 of 25 (48%): state ⚠\n#> Chunk 13 of 25 (52%): state ⚠\n#> Chunk 14 of 25 (56%): state ⚠\n#> Chunk 15 of 25 (60%): state ⚠\n#> Chunk 16 of 25 (64%): state ⚠\n#> Chunk 17 of 25 (68%): state ⚠\n#> Chunk 18 of 25 (72%): state ⚠\n#> Chunk 19 of 25 (76%): state ⚠\n#> Chunk 20 of 25 (80%): state ⚠\n#> Chunk 21 of 25 (84%): state ⚠\n#> Chunk 22 of 25 (88%): state ⚠\n#> Chunk 23 of 25 (92%): state ⚠\n#> Chunk 24 of 25 (96%): state ⚠\n#> Chunk 25 of 25 (100%): state ⚠\nplot(model, col = height.colors(50))"
+  },
+  {
+    "objectID": "07_engine.html#clip-a-catalog",
+    "href": "07_engine.html#clip-a-catalog",
+    "title": "LAScatalog",
+    "section": "Clip a catalog",
+    "text": "Clip a catalog\nWe clip the LAS data in the catalog using specified coordinate groups.\n\n# Set coordinate groups\nx <- c(207846, 208131, 208010, 207852, 207400)\ny <- c(7357315, 7357537, 7357372, 7357548, 7357900)\n\n# Visualize coordinate groups\nplot(ctg)\npoints(x, y)\n\n\n\n\n\n\n\n\n# Clip plots\nrois <- clip_circle(las = ctg, xcenter = x, ycenter = y, radius = 30)\n\n\n\n\n\n\n\n#> Chunk 1 of 5 (20%): state ✓\n#> Chunk 2 of 5 (40%): state ∅\n#> Chunk 3 of 5 (60%): state ✓\n#> Chunk 4 of 5 (80%): state ✓\n#> Chunk 5 of 5 (100%): state ✓\n\nplot(rois[[1]])\n\n\n\n\n\n\n\n\n\nplot(rois[[3]])"
+  },
+  {
+    "objectID": "07_engine.html#validate-clipped-data",
+    "href": "07_engine.html#validate-clipped-data",
+    "title": "LAScatalog",
+    "section": "Validate clipped data",
+    "text": "Validate clipped data\nWe validate the clipped LAS data using the las_check function.\n\nlas_check(rois[[1]])\n#> \n#>  Checking the data\n#>   - Checking coordinates... ✓\n#>   - Checking coordinates type... ✓\n#>   - Checking coordinates range... ✓\n#>   - Checking coordinates quantization... ✓\n#>   - Checking attributes type... ✓\n#>   - Checking ReturnNumber validity... ✓\n#>   - Checking NumberOfReturns validity... ✓\n#>   - Checking ReturnNumber vs. NumberOfReturns... ✓\n#>   - Checking RGB validity... ✓\n#>   - Checking absence of NAs... ✓\n#>   - Checking duplicated points...\n#>     ⚠ 10212 points are duplicated and share XYZ coordinates with other points\n#>   - Checking degenerated ground points... skipped\n#>   - Checking attribute population... ✓\n#>   - Checking gpstime incoherances skipped\n#>   - Checking flag attributes... ✓\n#>   - Checking user data attribute... skipped\n#>  Checking the header\n#>   - Checking header completeness... ✓\n#>   - Checking scale factor validity... ✓\n#>   - Checking point data format ID validity... ✓\n#>   - Checking extra bytes attributes validity... ✓\n#>   - Checking the bounding box validity... ✓\n#>   - Checking coordinate reference system... ✓\n#>  Checking header vs data adequacy\n#>   - Checking attributes vs. point format... ✓\n#>   - Checking header bbox vs. actual content... ✓\n#>   - Checking header number of points vs. actual content... ✓\n#>   - Checking header return number vs. actual content... ✓\n#>  Checking coordinate reference system...\n#>   - Checking if the CRS was understood by R... ✓\n#>  Checking preprocessing already done \n#>   - Checking ground classification... skipped\n#>   - Checking normalization... yes\n#>   - Checking negative outliers... ✓\n#>   - Checking flightline classification... skipped\n#>  Checking compression\n#>   - Checking attribute compression... no\nlas_check(rois[[3]])\n#> \n#>  Checking the data\n#>   - Checking coordinates... ✓\n#>   - Checking coordinates type... ✓\n#>   - Checking coordinates range... ✓\n#>   - Checking coordinates quantization... ✓\n#>   - Checking attributes type... ✓\n#>   - Checking ReturnNumber validity... ✓\n#>   - Checking NumberOfReturns validity... ✓\n#>   - Checking ReturnNumber vs. NumberOfReturns... ✓\n#>   - Checking RGB validity... ✓\n#>   - Checking absence of NAs... ✓\n#>   - Checking duplicated points...\n#>     ⚠ 30645 points are duplicated and share XYZ coordinates with other points\n#>   - Checking degenerated ground points... skipped\n#>   - Checking attribute population... ✓\n#>   - Checking gpstime incoherances skipped\n#>   - Checking flag attributes... ✓\n#>   - Checking user data attribute... skipped\n#>  Checking the header\n#>   - Checking header completeness... ✓\n#>   - Checking scale factor validity... ✓\n#>   - Checking point data format ID validity... ✓\n#>   - Checking extra bytes attributes validity... ✓\n#>   - Checking the bounding box validity... ✓\n#>   - Checking coordinate reference system... ✓\n#>  Checking header vs data adequacy\n#>   - Checking attributes vs. point format... ✓\n#>   - Checking header bbox vs. actual content... ✓\n#>   - Checking header number of points vs. actual content... ✓\n#>   - Checking header return number vs. actual content... ✓\n#>  Checking coordinate reference system...\n#>   - Checking if the CRS was understood by R... ✓\n#>  Checking preprocessing already done \n#>   - Checking ground classification... skipped\n#>   - Checking normalization... no\n#>   - Checking negative outliers... ✓\n#>   - Checking flightline classification... skipped\n#>  Checking compression\n#>   - Checking attribute compression... no"
+  },
+  {
+    "objectID": "07_engine.html#independent-files-e.g.-plots-as-catalogs",
+    "href": "07_engine.html#independent-files-e.g.-plots-as-catalogs",
+    "title": "LAScatalog",
+    "section": "Independent files (e.g. plots) as catalogs",
+    "text": "Independent files (e.g. plots) as catalogs\nWe read an individual LAS file as a catalog and perform operations on it.\n\n\n\n\n# Read single file as catalog\nctg_non_norm <- readLAScatalog(folder = \"data/MixedEucaNat.laz\")\n\n# Set options for output files\nopt_output_files(ctg_non_norm) <- paste0(tempdir(),\"/{XCENTER}_{XCENTER}\")\n\n# Write file as .laz\nopt_laz_compression(ctg_non_norm) <- TRUE\n\n# Get random plot locations and clip\nx <- runif(n = 4, min = ctg_non_norm$Min.X, max = ctg_non_norm$Max.X)\ny <- runif(n = 4, min = ctg_non_norm$Min.Y, max = ctg_non_norm$Max.Y)\nrois <- clip_circle(las = ctg_non_norm, xcenter = x, ycenter = y, radius = 10)\n\n\n\n\n\n\n\n#> Chunk 1 of 4 (25%): state ✓\n#> Chunk 2 of 4 (50%): state ✓\n#> Chunk 3 of 4 (75%): state ✓\n#> Chunk 4 of 4 (100%): state ✓\n\n\n# Read catalog of plots\nctg_plots <- readLAScatalog(tempdir())\n\n# Set independent files option\nopt_independent_files(ctg_plots) <- TRUE\nopt_output_files(ctg_plots) <- paste0(tempdir(),\"/{XCENTER}_{XCENTER}\")\n\n# Generate plot-level terrain models\nrasterize_terrain(las = ctg_plots, res = 1, algorithm = tin())\n\n\n\n\n\n\n\n#> Chunk 1 of 4 (25%): state ⚠\n#> Chunk 2 of 4 (50%): state ✓\n#> Chunk 3 of 4 (75%): state ✓\n#> Chunk 4 of 4 (100%): state ⚠\n#> class       : SpatRaster \n#> dimensions  : 63, 136, 1  (nrow, ncol, nlyr)\n#> resolution  : 1, 1  (x, y)\n#> extent      : 203838, 203974, 7358970, 7359033  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source      : rasterize_terrain.vrt \n#> name        :      Z \n#> min value   : 765.08 \n#> max value   : 773.50\n\n\n# Check files\npath <- paste0(tempdir())\nfile_list <- list.files(path, full.names = TRUE)\nfile <- file_list[grep(\"\\\\.tif$\", file_list)][[1]]\n\n# plot dtm\nplot(terra::rast(file))"
+  },
+  {
+    "objectID": "07_engine.html#itd-using-lascatalog",
+    "href": "07_engine.html#itd-using-lascatalog",
+    "title": "LAScatalog",
+    "section": "ITD using LAScatalog",
+    "text": "ITD using LAScatalog\nIn this section, we explore Individual Tree Detection (ITD) using the LAScatalog. We first configure catalog options for ITD.\n\n# Set catalog options\nopt_filter(ctg) <- \"-drop_withheld -drop_z_below 0 -drop_z_above 40\"\n\n\nDetect treetops and visualize\nWe detect treetops and visualize the results.\n\n# Detect tree tops and plot\nttops <- locate_trees(las = ctg, algorithm = lmf(ws = 3, hmin = 5))\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\nplot(chm, col = height.colors(50))\nplot(ttops, add = TRUE, cex = 0.1, col = \"black\")\n\n\n\n\n\n\n\n\n\n\nSpecify catalog options\nWe specify additional catalog options for ITD.\n\n# Specify more options\nopt_select(ctg) <- \"xyz\"\nopt_chunk_size(ctg) <- 300\nopt_chunk_buffer(ctg) <- 10\n\n# Detect treetops and plot\nttops <- locate_trees(las = ctg, algorithm = lmf(ws = 3, hmin = 5))\n\n\n\n\n\n\n\n#> Chunk 1 of 9 (11.1%): state ✓\n#> Chunk 2 of 9 (22.2%): state ✓\n#> Chunk 3 of 9 (33.3%): state ✓\n#> Chunk 4 of 9 (44.4%): state ✓\n#> Chunk 5 of 9 (55.6%): state ✓\n#> Chunk 6 of 9 (66.7%): state ✓\n#> Chunk 7 of 9 (77.8%): state ✓\n#> Chunk 8 of 9 (88.9%): state ✓\n#> Chunk 9 of 9 (100%): state ✓\nplot(chm, col = height.colors(50))\nplot(ttops, add = TRUE, cex = 0.1, col = \"black\")\n\n\n\n\n\n\n\n\n\n\nParallel computing\nIn this section, we explore parallel computing using the lidR package."
+  },
+  {
+    "objectID": "07_engine.html#load-future-library",
+    "href": "07_engine.html#load-future-library",
+    "title": "LAScatalog",
+    "section": "Load future library",
+    "text": "Load future library\nWe load the future library to enable parallel processing.\n\nlibrary(future)"
+  },
+  {
+    "objectID": "07_engine.html#specify-catalog-options-1",
+    "href": "07_engine.html#specify-catalog-options-1",
+    "title": "LAScatalog",
+    "section": "Specify catalog options",
+    "text": "Specify catalog options\nWe specify catalog options for parallel processing.\n\n# Specify options\nopt_select(ctg) <- \"xyz\"\nopt_chunk_size(ctg) <- 300\nopt_chunk_buffer(ctg) <- 10\n\n# Visualize and summarize the catalog chunks\nplot(ctg, chunk = TRUE)\n\n\n\n\n\n\n\nsummary(ctg)\n#> class       : LAScatalog (v1.2 format 0)\n#> extent      : 207340, 208040, 7357280, 7357980 (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S \n#> area        : 489930 m²\n#> points      : 14.49 million points\n#> density     : 29.6 points/m²\n#> density     : 23.2 pulses/m²\n#> num. files  : 25 \n#> proc. opt.  : buffer: 10 | chunk: 300\n#> input opt.  : select: xyz | filter: -drop_withheld -drop_z_below 0 -drop_z_above 40\n#> output opt. : in memory | w2w guaranteed | merging enabled\n#> drivers     :\n#>  - Raster : format = GTiff  NAflag = -999999  \n#>  - stars : NA_value = -999999  \n#>  - SpatRaster : overwrite = FALSE  NAflag = -999999  \n#>  - SpatVector : overwrite = FALSE  \n#>  - LAS : no parameter\n#>  - Spatial : overwrite = FALSE  \n#>  - sf : quiet = TRUE  \n#>  - data.frame : no parameter"
+  },
+  {
+    "objectID": "07_engine.html#single-core-processing",
+    "href": "07_engine.html#single-core-processing",
+    "title": "LAScatalog",
+    "section": "Single core processing",
+    "text": "Single core processing\nWe perform tree detection using a single core.\n\n# Process on single core\nfuture::plan(sequential)\n\n# Detect trees\nttops <- locate_trees(las = ctg, algorithm = lmf(ws = 3, hmin = 5))\n\n\n\n\n\n\n\n#> Chunk 1 of 9 (11.1%): state ✓\n#> Chunk 2 of 9 (22.2%): state ✓\n#> Chunk 3 of 9 (33.3%): state ✓\n#> Chunk 4 of 9 (44.4%): state ✓\n#> Chunk 5 of 9 (55.6%): state ✓\n#> Chunk 6 of 9 (66.7%): state ✓\n#> Chunk 7 of 9 (77.8%): state ✓\n#> Chunk 8 of 9 (88.9%): state ✓\n#> Chunk 9 of 9 (100%): state ✓"
+  },
+  {
+    "objectID": "07_engine.html#parallel-processing",
+    "href": "07_engine.html#parallel-processing",
+    "title": "LAScatalog",
+    "section": "Parallel processing",
+    "text": "Parallel processing\nWe perform tree detection using multiple cores in parallel.\n\n# Process multi-core\nfuture::plan(multisession)\n\n# Detect trees\nttops <- locate_trees(las = ctg, algorithm = lmf(ws = 3, hmin = 5))\n\n\n\n\n\n\n\n#> Chunk 1 of 9 (11.1%): state ✓\n#> Chunk 2 of 9 (22.2%): state ✓\n#> Chunk 3 of 9 (33.3%): state ✓\n#> Chunk 4 of 9 (44.4%): state ✓\n#> Chunk 6 of 9 (55.6%): state ✓\n#> Chunk 5 of 9 (66.7%): state ✓\n#> Chunk 9 of 9 (77.8%): state ✓\n#> Chunk 7 of 9 (88.9%): state ✓\n#> Chunk 8 of 9 (100%): state ✓"
+  },
+  {
+    "objectID": "07_engine.html#revert-to-single-core",
+    "href": "07_engine.html#revert-to-single-core",
+    "title": "LAScatalog",
+    "section": "Revert to single core",
+    "text": "Revert to single core\nWe revert to single core processing using future::plan(sequential).\n\n# Back to single core\nfuture::plan(sequential)\n\nThis concludes the tutorial on basic usage, catalog validation, indexing, CHM generation, ABA estimation, data clipping, ITD using catalog, and parallel computing using the lidR package in R."
+  },
+  {
+    "objectID": "07_engine.html#exercises-and-questions",
+    "href": "07_engine.html#exercises-and-questions",
+    "title": "LAScatalog",
+    "section": "Exercises and Questions",
+    "text": "Exercises and Questions\n\n\n\n\n\n\nTip\n\n\n\nThis exercise is complex because it involves options not yet described. Be sure to use the lidRbook and package documentation.\n\n\nUsing:\nctg <- readLAScatalog(folder = \"data/Farm_A/\")\n\nE1.\nGenerate a raster of point density for the provided catalog. Hint: Look through the documentation for a function that will do this!\n\n\nE2.\nModify the catalog to have a point density of 10 pts/m2 using the decimate_points() function. If you get an error make sure to read the documentation for decimate_points() and try: using opt_output_file() to write files to a temporary directory.\n\n\nE3.\nGenerate a raster of point density for this new decimated dataset.\n\n\nE4.\nRead the whole decimated catalog as a single las file. The catalog isn’t very big - not recommended for larger datasets!\n\n\nE5.\nRead documentation for the catalog_retile() function and merge the decimated catalog into larger tiles."
+  },
+  {
+    "objectID": "08_engine2.html#relevant-resources",
+    "href": "08_engine2.html#relevant-resources",
+    "title": "LAScatalog processing engine",
+    "section": "Relevant resources:",
+    "text": "Relevant resources:\n\nCode\nlidRbook section: Engine\nlidRbook section: Thinking outside the box"
+  },
+  {
+    "objectID": "08_engine2.html#overview",
+    "href": "08_engine2.html#overview",
+    "title": "LAScatalog processing engine",
+    "section": "Overview",
+    "text": "Overview\nThis code showcases the LASCATALOG PROCESSING ENGINE, which efficiently applies various functions to LiDAR catalogs in parallel. It introduces the catalog_map() function for processing LiDAR data in a catalog. The code includes routines to detect trees and calculate metrics on the LiDAR catalog."
+  },
+  {
+    "objectID": "08_engine2.html#environment",
+    "href": "08_engine2.html#environment",
+    "title": "LAScatalog processing engine",
+    "section": "Environment",
+    "text": "Environment\n\n# Clear environment\nrm(list = ls(globalenv()))\n\n# Load packages\nlibrary(lidR)\nlibrary(terra)\nlibrary(future)"
+  },
+  {
+    "objectID": "08_engine2.html#basic-usage",
+    "href": "08_engine2.html#basic-usage",
+    "title": "LAScatalog processing engine",
+    "section": "Basic Usage",
+    "text": "Basic Usage\nIn this section, we will cover the basic usage of the lidR package, including reading LiDAR data, visualization, and inspecting metadata.\n\nBasic Usage of lidR Package\nThis section introduces the basic usage of the lidR package for reading and visualizing LiDAR data, as well as inspecting metadata.\n\n\nReading and Visualizing LiDAR Data\nWe start by reading a LAS catalog and inspecting one of its LAS files.\n\n# Read a LAS catalog\nctg <- readLAScatalog(folder = \"data/Farm_A/\")\n\n# Inspect the first LAS file in the catalog\nlas_file <- ctg$filename[1]\nlas <- readLAS(las_file)\n#> Warning: There are 167254 points flagged 'withheld'.\nlas\n#> class        : LAS (v1.2 format 0)\n#> memory       : 28.7 Mb \n#> extent       : 207340, 207480, 7357280, 7357420 (xmin, xmax, ymin, ymax)\n#> coord. ref.  : SIRGAS 2000 / UTM zone 23S \n#> area         : 19600 m²\n#> points       : 578.3 thousand points\n#> density      : 29.5 points/m²\n#> density      : 22.81 pulses/m²\n\n\n\nVisualizing LiDAR Data\nWe visualize the LiDAR data from the selected LAS file using a 3D plot.\n\n# Visualize the LiDAR data in 3D\nplot(las, bg = \"white\")\n\n\n\ncatalog_map() Function\nThis section demonstrates the use of the catalog_map() function for efficient processing of LiDAR data within a LAS catalog.\n\n\nProblem Statement\nWe start by addressing a common problem - how can we apply operations to LAS data in a catalog?\n\n# Read a LAS file from the catalog and filter surface points\nlas_file <- ctg$filename[16]\nlas <- readLAS(files = las_file, filter = \"-drop_withheld -drop_z_below 0 -drop_z_above 40\")\nsurflas <- filter_surfacepoints(las = las, res = 1)\n\n\n\nVisualizing LiDAR Data\nWe visualize the selected LiDAR data, including both the original data and the surface points.\n# Visualize the LiDAR data with a default color palette\nplot(las)\n\n\n\n\n\n\n\n\n\n# Visualize the surface points using a default color palette\nplot(surflas)\n\n\n\n\n\n\n\n\n\n\n\nCalculating Rumple Index\nWe calculate the rumple index using the pixel_metrics() function.\n\n# Generate Area-based metrics\nri <- pixel_metrics(las = las, ~rumple_index(X,Y,Z), res = 10)\nplot(ri)\n\n\n\n\n\n\n\n\n\n\nSolution: LAScatalog Processing Engine\nThis section introduces the LAScatalog processing engine, a powerful tool for efficient processing of LAS data within a catalog.\n\n\nBasic Usage of the catalog_map() Function\nWe demonstrate the basic usage of the catalog_map() function with a simple user-defined function.\n\n# User-defined function for processing chunks\nroutine <- function(las){\n\n  # Perform computation\n  output <- pixel_metrics(las = las, func = ~max(Z), res = 20)\n\n  return(output)\n}\n\n# Initialize parallel processing\nplan(multisession)\n\n# Specify catalog options\nopt_filter(ctg) <- \"-drop_withheld\"\n\n# Apply routine to catalog\nout <- catalog_map(ctg = ctg, FUN = routine)\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\n\nprint(out)\n#> class       : SpatRaster \n#> dimensions  : 35, 35, 1  (nrow, ncol, nlyr)\n#> resolution  : 20, 20  (x, y)\n#> extent      : 207340, 208040, 7357280, 7357980  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> name        :    V1 \n#> min value   :  0.40 \n#> max value   : 93.35\n\n\n\nUser-Defined Functions for Processing\nWe demonstrate the use of user-defined functions to process LiDAR data within a catalog.\n\n# User-defined function for rumple index calculation\nroutine_rumple <- function(las, res1 = 10, res2 = 1){\n  \n  # filter surface points and create rumple index\n  las <- filter_surfacepoints(las = las, res = res2)\n  output  <- pixel_metrics(las = las, ~rumple_index(X,Y,Z), res1)\n  \n  return(output)\n}\n\n# Set catalog options\nopt_select(ctg) <- \"xyz\"\nopt_filter(ctg) <- \"-drop_withheld -drop_z_below 0 -drop_z_above 40\"\nopt_chunk_buffer(ctg) <- 0\nopt_chunk_size(ctg) <- 0\n\n# Specify options for merging\noptions <- list(alignment = 10)\n\n# Apply the user-defined function to the catalog\nri <- catalog_map(ctg = ctg, FUN = routine_rumple, res1 = 10, res2 = 0.5, .options = options)\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\n\n# Plot the output\nplot(ri, col = height.colors(50))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nThinking outside the box\n\n\n\nThe LAScatalog engine is versatile! The functions that can be applied to LiDAR data are infinite - leverage the flexibility of lidR and create software that pushes the boundaries of research in forest inventory and management!"
+  },
+  {
+    "objectID": "08_engine2.html#exercises",
+    "href": "08_engine2.html#exercises",
+    "title": "LAScatalog processing engine",
+    "section": "Exercises",
+    "text": "Exercises\n\nE1.\nImplement Noise Filtering\n\nExplain the purpose of the filter_noise() function.\nCreate a user-defined function to apply noise filtering using the catalog_map() function.\nMake sure to consider buffered points when using lidR’s filter_* functions."
+  },
+  {
+    "objectID": "08_engine2.html#conclusion",
+    "href": "08_engine2.html#conclusion",
+    "title": "LAScatalog processing engine",
+    "section": "Conclusion",
+    "text": "Conclusion\nThis concludes the tutorial on using the catalog_map() function in the lidR package to efficiently process LAS data within a catalog."
+  },
+  {
+    "objectID": "09_solutions.html#resources",
+    "href": "09_solutions.html#resources",
+    "title": "Excercise Solutions",
+    "section": "Resources",
+    "text": "Resources\n\nCode"
+  },
+  {
+    "objectID": "09_solutions.html#las",
+    "href": "09_solutions.html#las",
+    "title": "Excercise Solutions",
+    "section": "1-LAS",
+    "text": "1-LAS\n\n# Load packages\nlibrary(lidR)\nlibrary(sf)\nlibrary(terra)\n\n\nE1.\nWhat are withheld points? Where are they in our pointcloud?\n\n\nCode\n# According to ASPRS LAS specification http://www.asprs.org/wp-content/uploads/2019/07/LAS_1_4_r15.pdf page 18 \"a point # that should not be included in processing (synonymous with Deleted)\"\n\n# They are on the edges. It looks like they correspond to a buffer. LAStools makes use of the withheld bit to flag some # points. Without more information on former processing step it is hard to say.\n\n\n\n\nE2.\nRead the file dropping the withheld points.\n\n\nCode\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\", filter = \"-drop_withheld\")\nplot(las)\n\n\n\n\nE3.\nThe withheld points seem to be legitimate points that we want to keep.\nTry to load the file including the withheld points but get rid of the warning (without using suppressWarnings()). Hint: Check available -set_withheld filters in readLAS(filter = \"-h\")\n\n\nCode\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\", filter = \"-set_withheld_flag 0\")\nplot(las, color = \"Withheld_flag\")\n\n\n\n\nE4.\nLoad only the ground points and plot the point-cloud coloured by the returnnumber of the point. Do it loading the strict minimal amount of memory (4.7 Mb). Hint: use ?lidR::readLAS and see what select options might help.\n\n\nCode\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\", filter = \"-keep_class 2 -set_withheld_flag 0\", select = \"r\")\nplot(las, color = \"ReturnNumber\", legend = T)\nformat(object.size(las), \"Mb\")\n#> [1] \"4.6 Mb\""
+  },
+  {
+    "objectID": "09_solutions.html#roi",
+    "href": "09_solutions.html#roi",
+    "title": "Excercise Solutions",
+    "section": "2-ROI",
+    "text": "2-ROI\n\nplots <- st_read(\"data/shapefiles/MixedEucaNatPlot.shp\")\n#> Reading layer `MixedEucaNatPlot' from data source \n#>   `E:\\Repositories\\lidR_repos\\lidRtutorial\\data\\shapefiles\\MixedEucaNatPlot.shp' \n#>   using driver `ESRI Shapefile'\n#> Simple feature collection with 5 features and 1 field\n#> Geometry type: POINT\n#> Dimension:     XY\n#> Bounding box:  xmin: 203879.6 ymin: 7358932 xmax: 203960.6 ymax: 7359033\n#> Projected CRS: SIRGAS 2000 / UTM zone 23S\nplot(las@header, map = FALSE)\nplot(plots, add = TRUE)\n\n\n\n\n\n\n\n\n\nE1.\nClip the 5 plots with a radius of 11.3 m,\n\n\nCode\ninventory <- clip_roi(las, plots, radius = 11.3)\nplot(inventory[[2]])\n\n\n\n\nE2.\nClip a transect from A c(203850, 7358950) to B c(203950, 7959000).\n\n\nCode\ntr <- clip_transect(las, c(203850, 7358950), c(203950, 7359000), width = 5)\nplot(tr, axis = T)\n\n\n\n\nE3.\nClip a transect from A c(203850, 7358950) to B c(203950, 7959000) but reorient it so it is no longer on the XY diagonal. Hint = ?clip_transect\n\n\nCode\nptr <- clip_transect(las, c(203850, 7358950), c(203950, 7359000), width = 5, xz = TRUE)\nplot(tr, axis = T)\nplot(ptr, axis = T)\nplot(ptr$X, ptr$Z, cex = 0.25, pch = 19, asp = 1)"
+  },
+  {
+    "objectID": "09_solutions.html#aba",
+    "href": "09_solutions.html#aba",
+    "title": "Excercise Solutions",
+    "section": "3-ABA",
+    "text": "3-ABA\n\nlas <- readLAS(\"data/MixedEucaNat_normalized.laz\", select = \"*\",  filter = \"-set_withheld_flag 0\")\n\n\nE1.\nAssuming that biomass is estimated using the equation B = 0.5 * mean Z + 0.9 * 90th percentile of Z applied on first returns only, map the biomass.\n\n\nCode\nB <- pixel_metrics(las, ~0.5*mean(Z) + 0.9*quantile(Z, probs = 0.9), 10, filter = ~ReturnNumber == 1L)\nplot(B, col = height.colors(50))\n\n\n\n\n\n\n\n\n\nCode\n\nB <- pixel_metrics(las, .stdmetrics_z, 10)\nB <- 0.5*B[[\"zmean\"]] + 0.9*B[[\"zq90\"]]\nplot(B, col = height.colors(50))\n\n\n\n\n\n\n\n\n\nCode\n\npixel_metrics(las, ~as.list(quantile(Z), 10))\n#> class       : SpatRaster \n#> dimensions  : 8, 8, 5  (nrow, ncol, nlyr)\n#> resolution  : 20, 20  (x, y)\n#> extent      : 203820, 203980, 7358900, 7359060  (xmin, xmax, ymin, ymax)\n#> coord. ref. : SIRGAS 2000 / UTM zone 23S (EPSG:31983) \n#> source(s)   : memory\n#> names       : 0%,   25%,   50%,  75%,  100% \n#> min values  :  0,  0.00,  0.00,  0.0,  0.79 \n#> max values  :  0, 12.32, 17.19, 27.4, 34.46\n\n\n\n\nE2.\nMap the density of ground returns at a 5 m resolution with pixel_metrics(filter = ~Classification == LASGROUND).\n\n\nCode\nGND <- pixel_metrics(las, ~length(Z)/25, res = 5, filter = ~Classification == LASGROUND)\nplot(GND, col = heat.colors(50))\n\n\n\n\n\n\n\n\n\n\n\nE3.\nMap pixels that are flat (planar) using stdshapemetrics. These could indicate potential roads.\n\n\nCode\nm <- pixel_metrics(las, .stdshapemetrics, res = 3)\nplot(m[[\"planarity\"]], col = heat.colors(50))\n\n\n\n\n\n\n\n\n\nCode\nflat <- m[[\"planarity\"]] > 0.85\nplot(flat)"
+  },
+  {
+    "objectID": "09_solutions.html#dtm",
+    "href": "09_solutions.html#dtm",
+    "title": "Excercise Solutions",
+    "section": "5-DTM",
+    "text": "5-DTM\n\nE1.\nPlot and compare these two normalized point-clouds. Why do they look different? Fix that. Hint: filter.\nSome non ground points are below 0. It can be slightly low noise point not classified as ground by the data provider. This low points not being numerous and dark blue we hardly see them\n\n\nCode\nlas1 <- readLAS(\"data/MixedEucaNat.laz\", filter = \"-set_withheld_flag 0\")\nnlas1 <- normalize_height(las1, tin())\nnlas2 <- readLAS(\"data/MixedEucaNat_normalized.laz\", filter = \"-set_withheld_flag 0\")\nplot(nlas1)\nplot(nlas2)\n\nnlas1 <- filter_poi(nlas1, Z > -0.1)\nplot(nlas1)\n\n\n\n\nE2.\nClip a plot somewhere in MixedEucaNat.laz (the non-normalized file).\n\n\nCode\ncirc <- clip_circle(las, 203930, 7359000, 25)\nplot(circ)\n\n\n\n\nE3.\nCompute a DTM for this plot. Which method are you choosing and why?\n\n\nCode\ndtm <- rasterize_terrain(circ, 0.5, kriging())\nplot_dtm3d(dtm)\n\n\n\n\nE4.\nCompute a DSM (digital surface model). Hint: Look back to how you made a CHM.\n\n\nCode\ndsm <- rasterize_canopy(circ, 1, p2r(0.1))\nplot(dsm, col = height.colors(50))\n\n\n\n\n\n\n\n\n\n\n\nE5.\nNormalize the plot.\n\n\nCode\nncirc <- circ - dtm\nplot(ncirc)\n\n\n\n\nE6.\nCompute a CHM.\n\n\nCode\nchm <- rasterize_canopy(ncirc, 1, p2r(0.1))\nplot(chm, col = height.colors(50))\n\n\n\n\n\n\n\n\n\n\n\nE7.\nEstimate some metrics of interest in this plot with cloud_metric()\n\n\nCode\nmetrics <- cloud_metrics(ncirc, .stdmetrics_z)\nmetrics\n#> $zmax\n#> [1] 31.41\n#> \n#> $zmean\n#> [1] 11.11374\n#> \n#> $zsd\n#> [1] 11.44308\n#> \n#> $zskew\n#> [1] 0.4123246\n#> \n#> $zkurt\n#> [1] 1.42725\n#> \n#> $zentropy\n#> [1] NA\n#> \n#> $pzabovezmean\n#> [1] 42.39526\n#> \n#> $pzabove2\n#> [1] 60.61408\n#> \n#> $zq5\n#> [1] 0\n#> \n#> $zq10\n#> [1] 0\n#> \n#> $zq15\n#> [1] 0\n#> \n#> $zq20\n#> [1] 0\n#> \n#> $zq25\n#> [1] 0\n#> \n#> $zq30\n#> [1] 0\n#> \n#> $zq35\n#> [1] 1.18\n#> \n#> $zq40\n#> [1] 2.14\n#> \n#> $zq45\n#> [1] 3.62\n#> \n#> $zq50\n#> [1] 5.25\n#> \n#> $zq55\n#> [1] 8.903\n#> \n#> $zq60\n#> [1] 13.12\n#> \n#> $zq65\n#> [1] 18.32\n#> \n#> $zq70\n#> [1] 22.1\n#> \n#> $zq75\n#> [1] 24.31\n#> \n#> $zq80\n#> [1] 25.62\n#> \n#> $zq85\n#> [1] 26.7\n#> \n#> $zq90\n#> [1] 27.53\n#> \n#> $zq95\n#> [1] 28.39\n#> \n#> $zpcum1\n#> [1] 18.12365\n#> \n#> $zpcum2\n#> [1] 30.03214\n#> \n#> $zpcum3\n#> [1] 35.78736\n#> \n#> $zpcum4\n#> [1] 41.12687\n#> \n#> $zpcum5\n#> [1] 45.38727\n#> \n#> $zpcum6\n#> [1] 49.90123\n#> \n#> $zpcum7\n#> [1] 56.24318\n#> \n#> $zpcum8\n#> [1] 68.07501\n#> \n#> $zpcum9\n#> [1] 91.75045"
+  },
+  {
+    "objectID": "09_solutions.html#its",
+    "href": "09_solutions.html#its",
+    "title": "Excercise Solutions",
+    "section": "6-ITS",
+    "text": "6-ITS\nUsing:\n\nlas <- readLAS(files = \"data/MixedEucaNat_normalized.laz\", filter = \"-set_withheld_flag 0\")\ncol1 <- height.colors(50)\n\n\nE1.\nFind and count the trees.\n\n\nCode\nttops <- locate_trees(las = las, algorithm = lmf(ws = 3, hmin = 5))\nx <- plot(las)\nadd_treetops3d(x = x, ttops = ttops)\n\n\n\n\nE2.\nCompute and map the density of trees with a 10 m resolution.\n\n\nCode\nr <- terra::rast(x = ttops)\nterra::res(r) <- 10\nr <- terra::rasterize(x = ttops, y = r, \"treeID\", fun = 'count')\nplot(r, col = viridis::viridis(20))\n\n\n\n\n\n\n\n\n\n\n\nE3.\nSegment the trees.\n\n\nCode\nchm <- rasterize_canopy(las = las, res = 0.5, algorithm = p2r(subcircle = 0.15))\nplot(chm, col = col1)\n\n\n\n\n\n\n\n\n\nCode\nttops <- locate_trees(las = chm, algorithm = lmf(ws = 2.5))\nlas <- segment_trees(las = las, dalponte2016(chm = chm, treetops = ttops))\n\nplot(las, color = \"treeID\")\n\n\n\n\nE4.\nAssuming that a value of interest of a tree can be estimated using the crown area and the mean Z of the points with the formula 2.5 * area + 3 * mean Z. Estimate the value of interest of each tree.\n\n\nCode\nvalue_of_interest <- function(x,y,z)\n{\n  m <- stdtreemetrics(x,y,z)\n  avgz <- mean(z)\n  v <- 2.5*m$convhull_area + 3 * avgz\n  return(list(V = v))\n}\n\nV <- crown_metrics(las = las, func = ~value_of_interest(X,Y,Z))\nplot(x = V[\"V\"])\n\n\n\n\n\n\n\n\n\n\n\nE5.\nMap the total biomass at a resolution of 10 m. The output is a mixed of ABA and ITS\n\n\nCode\nVtot <- rasterize(V, r, \"V\", fun = \"sum\")\nplot(Vtot, col = viridis::viridis(20))"
+  },
+  {
+    "objectID": "09_solutions.html#lasctalog",
+    "href": "09_solutions.html#lasctalog",
+    "title": "Excercise Solutions",
+    "section": "7-LASCTALOG",
+    "text": "7-LASCTALOG\nThis exercise is complex because it involves options not yet described. Be sure to use the lidRbook and package documentation.\nhttps://cran.r-project.org/web/packages/lidR/lidR.pdf https://r-lidar.github.io/lidRbook/index.html\nUsing:\n\nctg <- readLAScatalog(folder = \"data/Farm_A/\")\n\n\nE1.\nGenerate a raster of point density for the provided catalog. Hint: Look through the documentation for a function that will do this!\n\n\nCode\nctg <- readLAScatalog(\"data/Farm_A/\", filter = \"-drop_withheld -drop_z_below 0 -drop_z_above 40\")\nD1 <- rasterize_density(las = ctg, res = 4)\n\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\nplot(D1, col = heat.colors(50))\n\n\n\n\n\n\n\n\n\n\nE2.\nModify the catalog to have a point density of 10 pts/m2 using the decimate_points() function. If you get an error make sure to read the documentation for decimate_points() and try: using opt_output_file() to write files to a temporary directory.\nhttps://r-lidar.github.io/lidRbook/engine.html#engine-dtm-ondisk\n\n\nCode\nnewctg <- decimate_points(las = ctg, algorithm = homogenize(density = 10, res = 5))\n#>  Error: This function requires that the LAScatalog provides an output file template.\n\n\n\n\nCode\nopt_filter(ctg) <- \"-drop_withheld\"\nopt_output_files(ctg) <- paste0(tempdir(), \"/{ORIGINALFILENAME}\")\nnewctg <- decimate_points(las = ctg, algorithm = homogenize(density = 10, res = 5))\n\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\n\n\n\nE3.\nGenerate a raster of point density for this new decimated dataset.\n\n\nCode\nopt_output_files(newctg) <- \"\"\nD2 <- rasterize_density(las = newctg, res = 4)\n\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\nplot(D2, col = heat.colors(50))\n\n\n\n\n\n\n\n\n\n\nE4.\nRead the whole decimated catalog as a single las file. The catalog isn’t very big - not recommended for larger data sets!\n\n\nCode\nlas <- readLAS(newctg)\nplot(las)\n\n\n\n\nE5.\nRead documentation for the catalog_retile() function and merge the dataset into larger tiles. Use ctg metadata to align new chunks to the lower left corner of the old ones. Hint: Visualize the chunks and use opt_chunk_* options.\n\n\nCode\nopt_chunk_size(ctg) <- 280\nopt_chunk_buffer(ctg) <- 0\nopt_chunk_alignment(ctg) <- c(min(ctg$Min.X), min(ctg$Min.Y))\nplot(ctg, chunk = T)\n\nopt_output_files(ctg) <- \"{tempdir()}/PRJ_A_{XLEFT}_{YBOTTOM}\"\nnewctg <- catalog_retile(ctg = ctg)\n\n\n\n\n\n\n\n\n#> Chunk 1 of 9 (11.1%): state ✓\n#> Chunk 2 of 9 (22.2%): state ✓\n#> Chunk 3 of 9 (33.3%): state ✓\n#> Chunk 4 of 9 (44.4%): state ✓\n#> Chunk 5 of 9 (55.6%): state ✓\n#> Chunk 6 of 9 (66.7%): state ✓\n#> Chunk 7 of 9 (77.8%): state ✓\n#> Chunk 8 of 9 (88.9%): state ✓\n#> Chunk 9 of 9 (100%): state ✓\nplot(newctg)"
+  },
+  {
+    "objectID": "09_solutions.html#engine",
+    "href": "09_solutions.html#engine",
+    "title": "Excercise Solutions",
+    "section": "8-ENGINE",
+    "text": "8-ENGINE\n\nE1.\nThe following is a simple (and a bit naive) function to remove high noise points. - Explain what this function does - Create a user-defined function to apply using catalog_map() - Hint: Dont forget about buffered points… remember lidR::filter_* functions.\n\n\nCode\nfilter_noise <- function(las, sensitivity)\n{\n  p95 <- pixel_metrics(las, ~quantile(Z, probs = 0.95), 10)\n  las <- merge_spatial(las, p95, \"p95\")\n  las <- filter_poi(las, Z < 1+p95*sensitivity, Z > -0.5)\n  las$p95 <- NULL\n  return(las)\n}\n\nfilter_noise_collection = function(las, sensitivity)\n{\n  las <- filter_noise(las, sensitivity)\n  las <- filter_poi(las, buffer == 0L)\n  return(las)\n}\n\nctg = readLAScatalog(\"data/Farm_A/\")\nopt_select(ctg) <- \"*\"\nopt_filter(ctg) <- \"-drop_withheld\"\nopt_output_files(ctg) <- \"{tempdir()}/*\"\nopt_chunk_buffer(ctg) <- 20\nopt_chunk_size(ctg) <- 0\n\noutput <- catalog_map(ctg, filter_noise_collection, sensitivity = 1.2)\n\n\n\n\n\n\n\n\n#> Chunk 1 of 25 (4%): state ✓\n#> Chunk 2 of 25 (8%): state ✓\n#> Chunk 3 of 25 (12%): state ✓\n#> Chunk 4 of 25 (16%): state ✓\n#> Chunk 5 of 25 (20%): state ✓\n#> Chunk 6 of 25 (24%): state ✓\n#> Chunk 7 of 25 (28%): state ✓\n#> Chunk 8 of 25 (32%): state ✓\n#> Chunk 9 of 25 (36%): state ✓\n#> Chunk 10 of 25 (40%): state ✓\n#> Chunk 11 of 25 (44%): state ✓\n#> Chunk 12 of 25 (48%): state ✓\n#> Chunk 13 of 25 (52%): state ✓\n#> Chunk 14 of 25 (56%): state ✓\n#> Chunk 15 of 25 (60%): state ✓\n#> Chunk 16 of 25 (64%): state ✓\n#> Chunk 17 of 25 (68%): state ✓\n#> Chunk 18 of 25 (72%): state ✓\n#> Chunk 19 of 25 (76%): state ✓\n#> Chunk 20 of 25 (80%): state ✓\n#> Chunk 21 of 25 (84%): state ✓\n#> Chunk 22 of 25 (88%): state ✓\n#> Chunk 23 of 25 (92%): state ✓\n#> Chunk 24 of 25 (96%): state ✓\n#> Chunk 25 of 25 (100%): state ✓\n\nlas <- readLAS(output)\nplot(las)"
+  },
+  {
+    "objectID": "index.html#people",
+    "href": "index.html#people",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "People",
+    "text": "People\nPresenter: Tristan Goodbody (UBC)\nAssistants:\n\nAlexandre Morin-Bernard (Laval)\nLeanna Stackhouse (UBC)\nLiam Irwin (UBC)"
+  },
+  {
+    "objectID": "index.html#materials",
+    "href": "index.html#materials",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "Materials",
+    "text": "Materials\nThis repository contains the material for a ~3 hour lidR tutorial workshop. You should install the material on your own machine from this repository. It contains the code, the shapefiles and point-clouds we will use. The workshop intends to:\n\nPresent an overview of what can be done with lidR\nGive users an understanding of how lidR may fit their needs\nExercises will be done depending on available time - users are encouraged to work on these after the workshop!\n\nFind the code, exercises, and solutions used in the .\\R directory."
+  },
+  {
+    "objectID": "index.html#requirements",
+    "href": "index.html#requirements",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "Requirements",
+    "text": "Requirements\n\nR version and Rstudio\n\nYou need to install a recent version of R i.e. R 4.0.x or newer.\nWe will work with Rstudio. This IDE is not mandatory to follow the workshop but is highly recommended.\n\n\n\nR Packages\nYou need to install the lidR package in its latest version (v >= 4.0.0).\ninstall.packages(\"lidR\")\nTo run all code in the tutorial yourself, you will need to install the following packages. You can use lidR without them, however.\nlibs <- c(\"geometry\",\"viridis\",\"future\",\"sf\",\"gstat\",\"terra\",\"mapview\",\"mapedit\",\"concaveman\",\"microbenchmark\")\n\ninstall.packages(libs)"
+  },
+  {
+    "objectID": "index.html#estimated-schedule",
+    "href": "index.html#estimated-schedule",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "Estimated schedule",
+    "text": "Estimated schedule\n\nIntroduction and set-up (09:00)\nRead LAS and LAZ files (09:15)\nSpatial queries (09:35)\nArea-Based Approach (09:45)\nCanopy Height Model (10:00)\nDigital Terrain Model (10:10)\n\n— Break until 10:30 —\n\nIndividual tree segmentation (10:30)\nFile collection processing engine (basic) (11:00)\nFile collection processing engine (advanced) (11:30)"
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "Resources",
+    "text": "Resources\nWe strongly recommend having the following resources available to you:\n\nThe lidR official documentation\nThe lidRbook of tutorials\n\nWhen working on exercises:\n\nStack Exchange with the lidR tag"
+  },
+  {
+    "objectID": "index.html#lidr",
+    "href": "index.html#lidr",
+    "title": "lidR: (A workshop for) Airborne LiDAR Data Manipulation and Visualization for Forestry Applications",
+    "section": "lidR",
+    "text": "lidR\nlidR is an R package to work with LiDAR data developed at Laval University (Québec). It was developed & continues to be maintained by Jean-Romain Roussel and was made possible between:\n\n2015 and 2018 thanks to the financial support of the AWARE project NSERC CRDPJ 462973-14; grantee Prof. Nicholas C. Coops.\n2018 and 2021 thanks to the financial support of the Ministère des Forêts, de la Faune et des Parcs (Québec).\n\nThe current release version of lidR can be found on CRAN and source code is hosted on GitHub."
+  }
+]
