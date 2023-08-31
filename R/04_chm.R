@@ -4,7 +4,7 @@
 #' 
 #' ## Relevant Resources
 #' 
-#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/04_chm.R)
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/04_chm.R)
 #' -   [lidRbook section](https://r-lidar.github.io/lidRbook/chm.html)
 #' 
 #' ## Overview

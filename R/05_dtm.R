@@ -4,7 +4,7 @@
 #' 
 #' ## Relevant resources
 #' 
-#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/05_dtm.R)
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/05_dtm.R)
 #' -   [lidRbook section](https://r-lidar.github.io/lidRbook/dtm.html)
 #' 
 #' ## Overview

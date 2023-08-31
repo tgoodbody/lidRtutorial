@@ -23,7 +23,7 @@ options(lidR.progress = FALSE)
 
 ## Relevant resources:
 
--   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/08_engine2.R)
+-   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/08_engine2.R)
 -   [lidRbook section: Engine](https://r-lidar.github.io/lidRbook/engine2.html)
 -   [lidRbook section: Thinking outside the box](https://r-lidar.github.io/lidRbook/outbox.html)
 

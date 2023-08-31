@@ -4,7 +4,7 @@
 #' 
 #' ## Relevant Resources
 #' 
-#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/02_roi.R)
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/02_roi.R)
 #' 
 #' -   [lidRbook section](https://r-lidar.github.io/lidRbook/engine.html#engine-clip)
 #' 

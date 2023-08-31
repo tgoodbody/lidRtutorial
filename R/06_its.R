@@ -4,7 +4,7 @@
 #' 
 #' ## Relevant resources
 #' 
-#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/06_its.R)
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/06_its.R)
 #' -   [lidRbook section](https://r-lidar.github.io/lidRbook/itd-its.html)
 #' 
 #' ## Overview

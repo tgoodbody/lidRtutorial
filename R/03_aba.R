@@ -4,7 +4,7 @@
 #' 
 #' ## Relevant Resources
 #' 
-#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/main/R/03_aba.R)
+#' -   [Code](https://github.com/tgoodbody/lidRtutorial/blob/master/R/03_aba.R)
 #' -   [lidRbook metrics section](https://r-lidar.github.io/lidRbook/modeling-aba.html)
 #' -   [lidRbook modelling section](https://r-lidar.github.io/lidRbook/modeling-aba.html)
 #' 
